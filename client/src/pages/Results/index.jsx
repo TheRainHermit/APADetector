@@ -70,7 +70,7 @@ export default function Results() {
     async function fetchResults() {
       setLoading(true);
       try {
-        console.log('Current UI language:', language);
+        //console.log('Current UI language:', language);
         const data = await fetchAnalysisResults(id, language);
         // Detecta si la respuesta es realmente de datos completos y no de "processing"
         if (data && data.results && Array.isArray(data.results) && data.results.length > 0) {
@@ -81,7 +81,7 @@ export default function Results() {
           setPieChartData(Array.isArray(data.pieChartData) ? data.pieChartData : []);
           setSectionChartData(Array.isArray(data.sectionChartData) ? data.sectionChartData : []);
           setScore(data.score);
-          console.log("SCORE: ", data.score)
+          //console.log("SCORE: ", data.score)
           setShowSuccess(true); // <-- Mostrar mensaje de éxito al terminar
         } else {
           setProcessing(true);

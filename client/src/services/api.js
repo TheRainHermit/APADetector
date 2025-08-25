@@ -10,7 +10,7 @@ export async function uploadAndAnalyze(file, lang = 'es') {
     const response = await axios.post(`${API_URL}?lang=${lang}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
-    console.log('response.data:', response.data);
+    //console.log('response.data:', response.data);
     return response.data;
   } catch (err) {
     console.error('UPLOAD ERROR:', err, err?.response?.data);

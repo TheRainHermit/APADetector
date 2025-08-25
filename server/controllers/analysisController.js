@@ -108,7 +108,7 @@ export async function analyzeDocument(req, res) {
         result.sectionKey || null,
         result.messageParams ? JSON.stringify(result.messageParams) : null
       ];
-      console.log('Insert params:', insertParams, 'Types:', insertParams.map(v => typeof v));
+      //console.log('Insert params:', insertParams, 'Types:', insertParams.map(v => typeof v));
       return pool.query(
         `INSERT INTO analysis_results (document_id, type, title, message, suggestion, section, count, titleKey, messageKey, suggestionKey, sectionKey, messageParams)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -148,7 +148,7 @@ export async function analyzeDocument(req, res) {
       }
     };
 
-    console.log('Enviando respuesta al frontend con', responseData.results.length, 'resultados');
+    //console.log('Enviando respuesta al frontend con', responseData.results.length, 'resultados');
     res.json(responseData);
 
   } catch (error) {
@@ -241,7 +241,7 @@ export async function getAnalysisResults(req, res) {
       `SELECT * FROM analysis_results WHERE document_id = ? ORDER BY created_at ASC`, [id]
     );
 
-    console.log('Results:', results);
+    //console.log('Results:', results);
 
     // --- Calcula los datos para las gráficas ---
     const typeCount = {};
@@ -283,7 +283,7 @@ export async function getAnalysisResults(req, res) {
       ...(r.messageParams && { messageParams: typeof r.messageParams === 'string' ? JSON.parse(r.messageParams) : r.messageParams })
     }));
 
-    console.log('Translated results:', translatedResults);
+    //console.log('Translated results:', translatedResults);
 
     // --- Calcula el score general APA usando función utilitaria ---
     const score = calculateApaScore(translatedResults, lang);
