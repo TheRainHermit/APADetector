@@ -32,27 +32,27 @@ const Footer = () => {
         <div className="footer-section">
           <h4 className="footer-heading">{t('footer.quickLinks')}</h4>
           <ul className="footer-links">
-            <li><Link to="/" className="footer-link">Inicio</Link></li>
-            <li><Link to="/about" className="footer-link">Acerca de</Link></li>
-            <li><Link to="/contact" className="footer-link">Contacto</Link></li>
-            <li><Link to="/privacy" className="footer-link">Política de Privacidad</Link></li>
-            <li><Link to="/terms" className="footer-link">Términos de Uso</Link></li>
+            <li><Link to="/" className="footer-link">{t('home')}</Link></li>
+            <li><Link to="/about" className="footer-link">{t('about')}</Link></li>
+            <li><Link to="/contact" className="footer-link">{t('contact')}</Link></li>
+            <li><Link to="/privacy" className="footer-link">{t('privacy')}</Link></li>
+            <li><Link to="/terms" className="footer-link">{t('terms')}</Link></li>
           </ul>
         </div>
 
         <div className="footer-section">
           <h4 className="footer-heading">{t('footer.resources')}</h4>
           <ul className="footer-links">
-            <li><a href="https://apastyle.apa.org/" target="_blank" rel="noopener noreferrer" className="footer-link">Guía de Estilo APA</a></li>
-            <li><a href="https://www.mendeley.com/guides/apa-citation-guide" target="_blank" rel="noopener noreferrer" className="footer-link">Guía de Citas APA</a></li>
-            <li><a href="https://www.citationmachine.net/apa" target="_blank" rel="noopener noreferrer" className="footer-link">Generador de Citas</a></li>
+            <li><a href="https://apastyle.apa.org/" target="_blank" rel="noopener noreferrer" className="footer-link">{t('footer.apaGuide')}</a></li>
+            <li><a href="https://www.mendeley.com/guides/apa-citation-guide" target="_blank" rel="noopener noreferrer" className="footer-link">{t('footer.citationGuide')}</a></li>
+            <li><a href="https://www.citationmachine.net/apa" target="_blank" rel="noopener noreferrer" className="footer-link">{t('footer.citationGenerator')}</a></li>
           </ul>
         </div>
       </div>
 
       <div className="footer-bottom">
         <p className="footer-copyright">
-          &copy; {currentYear} Miguel Angel Fabra Montaño - TheRainHermit. {t('footer.copyright')}.
+          &copy; {currentYear} {t('footer.copyrightName')}. {t('footer.copyright')}.
         </p>
       </div>
     </footer>

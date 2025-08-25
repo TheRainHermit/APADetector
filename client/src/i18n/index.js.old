@@ -1,0 +1,696 @@
+const I18N = {
+  es: {
+
+    //Landing Page:
+    landing: {
+      title: "Verifica el Formato APA de tus Documentos",
+      subtitle: "Asegúrate de que tus trabajos académicos cumplan con las normas APA de manera fácil y rápida.",
+      cta: "Analizar documento",
+      ctaSecondary: "Ver historial",
+      benefit1: "Análisis Automático",
+      benefit1Desc: "Detecta errores y sugerencias en tus documentos al instante.",
+      benefit2: "Resultados Confiables",
+      benefit2Desc: "Cumple con la 7ma edición de normas APA.",
+      benefit3: "Rápido y Fácil",
+      benefit3Desc: "Sube tu archivo y obtén resultados en segundos.",
+      benefit4: "Aprendizaje Mejorado",
+      benefit4Desc: "Aprende las reglas APA con nuestras explicaciones detalladas.",
+      benefit5: "Formato PDF",
+      benefit5Desc: "Analiza documentos en PDF y obtén resultados inmediatos."
+    },
+
+    // General / Navegación
+    appTitle: 'APA Detector',
+    home: 'Inicio',
+    analyze: 'Analizar',
+    documents: 'Documentos',
+    results: 'Resultados',
+    back: 'Volver',
+    close: 'Cerrar',
+    loading: 'Cargando...',
+    error: 'Error',
+    warning: 'Advertencia',
+    info: 'Información',
+    success: 'Éxito',
+    suggestion: 'Sugerencia',
+    section: 'Sección',
+    cancel: 'Cancelar',
+    about: 'Acerca de',
+    contact: 'Contacto',
+    privacy: 'Política de Privacidad',
+    terms: 'Términos de Uso',
+    language: 'Idioma',
+    menu: 'Menú',
+    openMenu: 'Abrir menú',
+    closeMenu: 'Cerrar menú',
+    // Analyze Page
+    analyzeTitle: 'Analizar Documento',
+    dropHere: 'Arrastra y suelta un archivo aquí, o haz clic para seleccionar uno.',
+    dropActive: 'Suelta el archivo aquí...',
+    allowedTypes: 'Formatos soportados: PDF, DOCX, ODT, TXT',
+    maxSize: 'Máximo permitido: 5 MB.',
+    fileTypeError: 'Tipo de archivo no permitido. Solo PDF, Word, ODT o TXT.',
+    fileSizeError: 'El archivo es demasiado grande. Máximo permitido: 5 MB.',
+    fileRequired: 'Selecciona un archivo para analizar.',
+    analyzeBtn: 'Analizar',
+    analyzing: 'Analizando documento...',
+    analyzeError: 'Error al analizar el documento',
+    removeFile: 'Eliminar archivo',
+    language: 'Idioma del análisis',
+    analyzeNewDoc: 'Analizar un nuevo documento',
+    noSectionChartData: 'No se encontraron datos por sección.',
+    processingResults: 'El análisis está en curso. Espera unos segundos...',
+    typeDistributionAlt: 'Gráfico circular que muestra la cantidad de advertencias, sugerencias e información detectadas en el análisis.',
+    sectionResultsAlt: 'Gráfico de barras que muestra la cantidad de hallazgos por sección del documento.',
+    generalScoreTitle: 'Calificación general APA',
+    generalScoreDescription: 'Este puntaje resume el cumplimiento global de normas APA.',
+    scores: {
+      excellent: 'Excelente',
+      good: 'Bueno',
+      acceptable: 'Aceptable',
+      poor: 'Deficiente',
+      very_poor: 'Muy deficiente',
+    },
+
+    // Sections
+    sections: {
+      general: 'General',
+      portada: 'Portada',
+      resumen: 'Resumen',
+      referencias: 'Referencias',
+      citas: 'Citas',
+      encabezados: 'Encabezados',
+      abstract: 'Resumen',
+      references: 'Referencias',
+      citations: 'Citas',
+      headers: 'Encabezados'
+    },
+
+    // Messages
+    portadaIncompleta: 'No se detectó una portada completa. Faltan: {missing}.',
+    resumenNoEncontrado: 'No se encontró una sección de resumen.',
+    referenciasNoEncontradas: 'No se encontró una sección de referencias.',
+    usandoBibliografiaEnLugarDeReferencias: 'El documento utiliza "Bibliografía" en lugar de "Referencias", que es lo requerido por el estilo APA.',
+    sugerenciaUsarReferencias: 'Cambia el título de la sección a "Referencias" para cumplir con APA.',
+    ordenEncabezadosNoEvaluable: 'No se pudo evaluar el orden de los encabezados principales porque falta(n) uno o más encabezados clave.',
+    sugerenciaIncluirEncabezados: 'Asegúrate de incluir todos los encabezados principales (Introducción, Metodología, Resultados, Discusión, Conclusión) para poder evaluar el orden APA.',
+    ordenEncabezadosIncorrecto: 'Los encabezados principales no están en el orden recomendado APA.',
+    sugerenciaOrdenEncabezados: 'Asegúrate de que la estructura del documento siga el orden APA: Introducción, Metodología, Resultados, Discusión, Conclusión.',
+    ordenEncabezadosCorrecto: 'Los encabezados principales están en el orden correcto.',
+    pocasCitas: 'Se detectaron {count} cita(s) que no parecen estar en formato APA.',
+    sugerenciaFormatoCitas: 'Asegúrate de que cada referencia siga el formato: Apellido, Inicial. (Año). Título. Editorial.',
+    citasDetectadas: 'Se detectaron {count} cita(s) en el texto con formato APA o variantes.',
+    revisionMenor: 'El documento solo requiere revisión menor. No se detectaron errores ni advertencias importantes.',
+    sugerenciaRevisionMenor: 'Revisa los detalles informativos para mejorar aún más tu documento.',
+    exitoAnalisis: '¡El documento cumple con las validaciones APA básicas!',
+    documentoDemasiadoGrande: 'El documento es demasiado grande (más de {maxLines} líneas o {maxWords} palabras).',
+    sugerenciaReducirDocumento: 'Reduce el documento para facilitar el análisis.',
+    documentoCorto: 'El documento es muy corto (menos de {minPages} páginas o {minWords} palabras).',
+    sugerenciaAumentarPaginas: 'Se recomienda que el documento tenga al menos {minPages} páginas.',
+    sugerenciaAumentarPalabras: 'Asegúrate de que el documento tenga al menos {minWords} palabras para cumplir con los estándares académicos.',
+
+    // Score messages
+    score: {
+      excellent: 'Excelente',
+      good: 'Bueno',
+      acceptable: 'Aceptable',
+      poor: 'Deficiente',
+      very_poor: 'Muy deficiente',
+    },
+
+    // Section titles
+    sections: {
+      general: 'General',
+      portada: 'Portada',
+      resumen: 'Resumen',
+      referencias: 'Referencias',
+      citas: 'Citas',
+      encabezados: 'Encabezados'
+    },
+
+    // Message types
+    messageTypes: {
+      error: 'Error',
+      warning: 'Advertencia',
+      info: 'Información',
+      success: 'Éxito',
+      suggestion: 'Sugerencia'
+    },
+
+    // Specific messages
+    sugerenciaResumen: 'Incluye una sección de resumen después de la portada.',
+    sugerenciaReferencias: 'Incluye una sección de referencias al final del documento.',
+    sugerenciaPortada: 'Asegúrate de incluir una portada completa en el documento.',
+    // Results Page
+    resultsTitle: 'Resultados del Análisis',
+    resultsFor: 'Resultados para',
+    reportTitle: 'Reporte de Análisis APA',
+    file: 'Archivo',
+    type: 'Tipo',
+    size: 'Tamaño',
+    generatedBy: 'Generado por',
+    results: 'Resultados',
+    downloadPdf: 'Descargar PDF',
+    downloadExcel: 'Descargar Excel',
+    errorLoading: 'No se pudieron cargar los resultados.',
+    uploadedAt: 'Subido el',
+    noResults: 'No se encontraron resultados para este documento.',
+    position: 'Posición',
+    context: 'Contexto',
+    backToAnalyze: 'Volver a analizar otro documento',
+    resultsTypeDistribution: 'Distribución de tipos',
+    resultsBySection: 'Resultados por sección',
+    downloadPdf: 'Descargar PDF',
+    downloadExcel: 'Descargar Excel',
+    reportLang: 'Idioma del reporte',
+    resultsFor: 'Resultados para',
+    section: 'Sección',
+    suggestion: 'Sugerencia',
+    noResults: 'No se encontraron resultados para este documento.',
+    noSectionChartData: 'No se encontraron datos por sección.',
+    processingResults: 'El análisis está en curso. Espera unos segundos...',
+    analysisComplete: '¡Análisis completado exitosamente!',
+    typeDistributionAlt: 'Gráfico circular que muestra la cantidad de advertencias, sugerencias e información detectadas en el análisis.',
+    sectionResultsAlt: 'Gráfico de barras que muestra la cantidad de hallazgos por sección del documento.',
+    generalScoreTitle: 'Calificación general APA',
+    generalScoreDescription: 'Este puntaje resume el cumplimiento global de normas APA.',
+    scores: {
+      excellent: 'Excelente',
+      good: 'Bueno',
+      acceptable: 'Aceptable',
+      poor: 'Deficiente',
+      very_poor: 'Muy deficiente',
+    },
+
+    // Documents Page
+    documentsTitle: 'Mis Documentos Analizados',
+    uploadNew: 'Subir Nuevo Documento',
+    name: 'Nombre',
+    type: 'Tipo',
+    size: 'Tamaño',
+    date: 'Fecha',
+    actions: 'Acciones',
+    view: 'Ver',
+    noDocuments: 'No tienes documentos analizados aún.',
+    loadingDocuments: 'Cargando documentos...',
+    errorDocuments: 'No se pudieron cargar los documentos.',
+    search: 'Buscar',
+    type: 'Tipo',
+    dateFrom: 'Fecha desde',
+    dateTo: 'Fecha hasta',
+    orderBy: 'Ordenar por',
+    orderDir: 'Dirección',
+    asc: 'Ascendente',
+    desc: 'Descendente',
+    all: 'Todos',
+    pdf: 'PDF',
+    docx: 'DOCX',
+    odt: 'ODT',
+    txt: 'TXT',
+
+    // Otros
+    confirm: 'Confirmar',
+    yes: 'Sí',
+    no: 'No',
+
+    // Footer
+    footer: {
+      title: 'APA Detector',
+      description: 'Herramienta para verificar el cumplimiento de las normas APA en documentos académicos.',
+      quickLinks: 'Enlaces Rápidos',
+      resources: 'Recursos',
+      apaGuide: 'Guía de Estilo APA',
+      citationGuide: 'Guía de Citas APA',
+      citationGenerator: 'Generador de Citas',
+      copyright: 'Todos los derechos reservados.',
+      copyrightName: 'Miguel Angel Fabra Montaño - TheRainHermit'
+    },
+
+    // About Page
+    aboutPage: {
+      title: 'Sobre Nosotros',
+      description1: 'Somos un equipo apasionado por la educación y la tecnología, comprometidos con facilitar el proceso de escritura académica mediante herramientas innovadoras.',
+      mission: 'Nuestra misión es ayudar a estudiantes, investigadores y profesionales a asegurar que sus documentos cumplan con los estándares de formato APA, ahorrando tiempo y mejorando la calidad de sus trabajos académicos.'
+    },
+
+    error: {
+      FILE_TYPE_NOT_ALLOWED: 'Tipo de archivo no permitido. Solo PDF, Word, ODT o TXT.',
+      FILE_TOO_LARGE: 'El archivo es demasiado grande. Máximo permitido: 5 MB.',
+      UPLOAD_ERROR: 'Error al subir el archivo.',
+      NO_FILE: 'No se envió ningún archivo o el archivo no es válido.',
+      ANALYSIS_ERROR: 'Error al analizar el documento.',
+      GET_DOCUMENTS_ERROR: 'Error al obtener el historial de documentos.',
+      DOCUMENT_NOT_FOUND: 'Documento no encontrado.',
+      GET_ANALYSIS_RESULTS_ERROR: 'Error al obtener resultados.',
+      INVALID_QUERY_PARAMS: 'Parámetros de consulta inválidos.',
+    },
+
+    // Contact Page
+    contactPage: {
+      title: 'Contáctanos',
+      subtitle: '¿Tienes alguna pregunta o comentario? Estamos aquí para ayudarte.',
+      address: 'Cali, Colombia',
+      email: 'contacto@apadetector.com',
+      phone: '+57 3194247585',
+      form: {
+        name: 'Nombre',
+        email: 'Correo Electrónico',
+        message: 'Mensaje',
+        submit: 'Enviar Mensaje'
+      },
+      successMessage: '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.',
+      errorMessage: 'Error al enviar el mensaje. Por favor, inténtalo de nuevo.'
+    },
+
+    legal: {
+      privacyTitle: "Política de Privacidad",
+      privacyDate: "Última actualización: 23 de agosto de 2025",
+      privacySections: {
+        section1: "1. Introducción",
+        intro1: "Bienvenido a nuestro Detector de Normas APA 7ma Edición. Esta política de privacidad explica cómo recopilamos, usamos y protegemos su información cuando utiliza nuestro servicio gratuito y de código abierto.",
+        intro2: "Valoramos su privacidad y estamos comprometidos a proteger sus datos personales. Al utilizar nuestro detector APA, usted acepta las prácticas descritas en esta política.",
+        section2: "2. Información que Recopilamos",
+        info1: "Nuestro servicio está diseñado con la privacidad en mente:",
+        infoList: [
+          "Texto que usted ingresa: Procesamos el texto que usted introduce para detectar el cumplimiento de las normas APA, pero no almacenamos permanentemente este contenido.",
+          "Datos de uso: Recopilamos información anónima sobre cómo se utiliza nuestro servicio para mejorar su funcionalidad.",
+          "Cookies y tecnologías similares: Utilizamos cookies para mejorar su experiencia y analizar el tráfico del sitio."
+        ],
+        section3: "3. Cómo Utilizamos Su Información",
+        use1: "Utilizamos la información recopilada para:",
+        useList: [
+          "Proporcionar el servicio de detección de normas APA",
+          "Mejorar y optimizar nuestro servicio",
+          "Analizar tendencias de uso para mejorar la experiencia del usuario",
+          "Garantizar la seguridad y prevenir abusos"
+        ],
+        section4: "4. Compartición de Información",
+        share1: "No vendemos, comerciamos ni transferimos su información personal a terceros. Solo compartimos información anónima y agregada con fines analíticos.",
+        share2: "Como proyecto de código abierto, los colaboradores pueden tener acceso a datos agregados y anónimos para mejorar el servicio.",
+        section5: "5. Seguridad de sus Datos",
+        security: "Implementamos medidas de seguridad técnicas y organizativas para proteger la información procesada por nuestro servicio. Sin embargo, ningún método de transmisión por Internet o almacenamiento electrónico es 100% seguro.",
+        section6: "6. Sus Derechos de Privacidad",
+        rights1: "Usted tiene derecho a:",
+        rightsList: [
+          "Acceder a la información que tenemos sobre usted",
+          "Solicitar la corrección o eliminación de sus datos",
+          "Oponerse al procesamiento de sus datos",
+          "Solicitar la portabilidad de sus datos"
+        ],
+        rights2: "Para ejercer estos derechos, puede contactarnos a través de los medios proporcionados en esta política.",
+        section7: "7. Cambios a esta Política",
+        changes: "Podemos actualizar esta política de privacidad periódicamente. Le notificaremos sobre cambios significativos publicando la nueva política en este sitio y actualizando la fecha de 'Última actualización'.",
+        section8: "8. Contacto",
+        contact1: "Si tiene preguntas sobre esta política de privacidad, puede contactarnos a través de:",
+        contactList: [
+          "Email: contacto@apadetector.com",
+          "Repositorio GitHub: github.com/TheRainHermit/APADetector/issues"
+        ]
+      },
+      termsTitle: "Términos de Uso",
+      termsDate: "Última actualización: 23 de agosto de 2025",
+      termsSections: {
+        section1: "1. Aceptación de los Términos",
+        intro1: "Al acceder y utilizar el Detector de Normas APA 7ma Edición (\"el Servicio\"), usted acepta cumplir con estos Términos de Uso y todas las leyes y regulaciones aplicables.",
+        section2: "2. Descripción del Servicio",
+        desc1: "Nuestro servicio ofrece:",
+        descList: [
+          "Detección automática del cumplimiento de las normas APA 7ma edición en textos académicos",
+          "Sugerencias para corregir posibles errores de formato",
+          "Una herramienta gratuita y de código abierto"
+        ],
+        disclaimer: "Limitación de responsabilidad: Este servicio es una herramienta automatizada y puede no detectar todos los errores o puede señalar falsos positivos. Siempre verifique manualmente sus citas y referencias.",
+        section3: "3. Licencia de Código Abierto",
+        license1: "Este proyecto es de código abierto bajo la licencia MIT:",
+        licenseList: [
+          "Usted puede usar, copiar, modificar, fusionar, publicar, distribuir, sublicenciar y/o vender copias del software.",
+          "El software se proporciona \"TAL CUAL\", sin garantía de ningún tipo.",
+          "El reconocimiento de autoría original debe mantenerse en todas las copias o partes sustanciales del software."
+        ],
+        section4: "4. Conducta del Usuario",
+        conduct1: "Al utilizar nuestro servicio, usted se compromete a:",
+        conductList: [
+          "No utilizar el servicio para fines ilegales o no autorizados",
+          "No cargar contenido malicioso o que pueda dañar el servicio",
+          "No realizar actividades que puedan sobrecargar nuestra infraestructura",
+          "Respetar los derechos de propiedad intelectual de terceros"
+        ],
+        section5: "5. Contenido del Usuario",
+        userContent: "Usted conserva todos los derechos de propiedad intelectual sobre el texto que ingresa en nuestro servicio. Al utilizar el servicio, nos otorga una licencia limitada para procesar su texto únicamente con el propósito de proporcionar el servicio de detección de normas APA.",
+        section6: "6. Limitación de Responsabilidad",
+        limitation1: "El servicio se proporciona \"tal cual\" y \"según disponibilidad\". No garantizamos que:",
+        limitationList: [
+          "El servicio detecte todos los errores APA",
+          "El servicio esté libre de interrupciones o errores",
+          "Los resultados obtenidos sean exactos o confiables"
+        ],
+        limitation2: "En ningún caso seremos responsables por daños indirectos, incidentales o consecuentes resultantes del uso o la imposibilidad de uso del servicio.",
+        section7: "7. Modificaciones del Servicio",
+        modifications1: "Nos reservamos el derecho de:",
+        modificationsList: [
+          "Modificar o discontinuar el servicio, temporal o permanentemente",
+          "Actualizar estos Términos de Uso periódicamente",
+          "Limitar el uso del servicio si es necesario"
+        ],
+        modifications2: "Las continuas actualizaciones se realizarán a través de nuestro repositorio de código abierto.",
+        section8: "8. Ley Aplicable",
+        law: "Estos Términos de Uso se regirán e interpretarán de acuerdo con las leyes de Colombia, sin considerar sus disposiciones sobre conflictos de leyes.",
+        section9: "9. Contacto",
+        contact1: "Para preguntas sobre estos Términos de Uso, puede contactarnos a través de:",
+        contactList: [
+          "Email: contacto@apadetector.com",
+          "Repositorio GitHub: github.com/TheRainHermit/APADetector/issues"
+        ]
+      }
+    },
+  },
+  en: {
+    //Landing Page
+    landing: {
+      title: "Check the APA Format of Your Documents",
+      subtitle: "Make sure your academic papers comply with APA standards easily and quickly.",
+      cta: "Analyze Document",
+      ctaSecondary: "View History",
+      benefit1: "Automatic Analysis",
+      benefit1Desc: "Detects errors and suggestions in your documents instantly.",
+      benefit2: "Reliable Results",
+      benefit2Desc: "Complies with the 7th edition of APA standards.",
+      benefit3: "Fast and Easy",
+      benefit3Desc: "Upload your file and get results in seconds.",
+      benefit4: "Enhanced Learning",
+      benefit4Desc: "Learn APA rules with our detailed explanations.",
+      benefit5: "PDF Format",
+      benefit5Desc: "Analyze PDF documents and get instant results."
+    },
+
+    // General
+    error: 'Error',
+    warning: 'Warning',
+    info: 'Information',
+    success: 'Success',
+    suggestion: 'Suggestion',
+    section: 'Section',
+
+    // Sections
+    sections: {
+      general: 'General',
+      portada: 'Cover Page',
+      resumen: 'Abstract',
+      referencias: 'References',
+      citas: 'Citations',
+      encabezados: 'Headers',
+      abstract: 'Abstract',
+      references: 'References',
+      citations: 'Citations',
+      headers: 'Headers'
+    },
+
+    // Messages
+    portadaIncompleta: 'The cover page is incomplete. Missing: {missing}.',
+    resumenNoEncontrado: 'No abstract section found.',
+    referenciasNoEncontradas: 'No references section found.',
+    usandoBibliografiaEnLugarDeReferencias: 'The document uses "Bibliografía" instead of "Referencias" as required by APA style.',
+    sugerenciaUsarReferencias: 'Change the section title to "Referencias" to comply with APA.',
+    ordenEncabezadosNoEvaluable: 'Could not evaluate the order of main headers because one or more key headers are missing.',
+    sugerenciaIncluirEncabezados: 'Make sure to include all main headers (Introduction, Methodology, Results, Discussion, Conclusion) to evaluate APA order.',
+    ordenEncabezadosIncorrecto: 'Main headers are not in the recommended APA order.',
+    sugerenciaOrdenEncabezados: 'Ensure your document follows the APA structure: Introduction, Methodology, Results, Discussion, Conclusion.',
+    ordenEncabezadosCorrecto: 'Main headers are in the correct order.',
+    pocasCitas: 'Not enough APA-style citations detected in the text (Author, year) or variants.',
+    sugerenciaFormatoCitas: 'Include citations in APA format, e.g.: (Smith & Jones, 2020), (Smith et al., 2020).',
+    citasDetectadas: '{count} APA-style citation(s) or variants detected in the text.',
+    revisionMenor: 'The document only requires minor review. No major errors or warnings were found.',
+    sugerenciaRevisionMenor: 'Check the informational details to further improve your document.',
+    exitoAnalisis: 'The document passes basic APA validations!',
+    documentoDemasiadoGrande: 'The document is too large (more than {maxLines} lines or {maxWords} words).',
+    sugerenciaReducirDocumento: 'Reduce the document size for better analysis.',
+    documentoCorto: 'The document is too short (less than {minPages} pages or {minWords} words).',
+    sugerenciaAumentarPaginas: 'The document should have at least {minPages} pages.',
+    sugerenciaAumentarPalabras: 'Ensure the document has at least {minWords} words to meet academic standards.',
+
+
+
+    // General / Navigation
+    appTitle: 'APA Detector',
+    home: 'Home',
+    analyze: 'Analyze',
+    documents: 'Documents',
+    results: 'Results',
+    back: 'Back',
+    close: 'Close',
+    loading: 'Loading...',
+    error: 'An error occurred.',
+    success: 'Success',
+    cancel: 'Cancel',
+    about: 'About',
+    contact: 'Contact',
+    privacy: 'Privacy Policy',
+    terms: 'Terms of Use',
+    language: 'Language',
+    menu: 'Menu',
+    openMenu: 'Open menu',
+    closeMenu: 'Close menu',
+    // Analyze Page
+    analyzeTitle: 'Analyze Document',
+    dropHere: 'Drag and drop a file here, or click to select one.',
+    dropActive: 'Drop the file here...',
+    allowedTypes: 'Supported formats: PDF, DOCX, ODT, TXT',
+    maxSize: 'Maximum allowed: 5 MB.',
+    fileTypeError: 'File type not allowed. Only PDF, Word, ODT or TXT.',
+    fileSizeError: 'The file is too large. Maximum allowed: 5 MB.',
+    fileRequired: 'Select a file to analyze.',
+    analyzeBtn: 'Analyze',
+    analyzing: 'Analyzing document...',
+    analyzeError: 'Error analyzing the document',
+    removeFile: 'Remove file',
+    language: 'Analysis language',
+    analyzeNewDoc: 'Analyze a new document',
+    noSectionChartData: 'No section data found.',
+    processingResults: 'The analysis is in progress. Please wait a moment...',
+    typeDistributionAlt: 'Pie chart showing the number of warnings, suggestions, and information detected in the analysis.',
+    sectionResultsAlt: 'Bar chart showing the number of findings per document section.',
+    generalScoreTitle: 'General APA Score',
+    generalScoreDescription: 'This score summarizes overall APA compliance.',
+    scores: {
+      excellent: 'Excellent',
+      good: 'Good',
+      acceptable: 'Acceptable',
+      poor: 'Poor',
+      very_poor: 'Very poor',
+    },
+
+    // Results Page
+    resultsTitle: 'Analysis Results',
+    resultsFor: 'Results for',
+    reportTitle: 'APA Analysis Report',
+    file: 'File',
+    type: 'Type',
+    size: 'Size',
+    generatedBy: 'Generated by',
+    results: 'Results',
+    downloadPdf: 'Download PDF',
+    downloadExcel: 'Download Excel',
+    errorLoading: 'Failed to load results.',
+    uploadedAt: 'Uploaded at',
+    noResults: 'No results found for this document.',
+    position: 'Position',
+    context: 'Context',
+    backToAnalyze: 'Back to analyze another document',
+    resultsTypeDistribution: 'Type distribution',
+    resultsBySection: 'Results by section',
+    downloadPdf: 'Download PDF',
+    downloadExcel: 'Download Excel',
+    reportLang: 'Report language',
+    resultsFor: 'Results for',
+    section: 'Section',
+    suggestion: 'Suggestion',
+    noResults: 'No results found for this document.',
+    analysisComplete: 'Analysis completed successfully!',
+    generalScoreTitle: 'General APA Score',
+    generalScoreDescription: 'This score summarizes overall APA compliance.',
+
+    // Documents Page
+    documentsTitle: 'My Analyzed Documents',
+    uploadNew: 'Upload New Document',
+    name: 'Name',
+    type: 'Type',
+    size: 'Size',
+    date: 'Date',
+    actions: 'Actions',
+    view: 'View',
+    noDocuments: 'You have no analyzed documents yet.',
+    loadingDocuments: 'Loading documents...',
+    errorDocuments: 'Failed to load documents.',
+    search: 'Search',
+    type: 'Type',
+    dateFrom: 'Date from',
+    dateTo: 'Date to',
+    orderBy: 'Order by',
+    orderDir: 'Order dir',
+    asc: 'Asc',
+    desc: 'Desc',
+    all: 'All',
+    pdf: 'PDF',
+    docx: 'DOCX',
+    odt: 'ODT',
+    txt: 'TXT',
+
+    // Others
+    confirm: 'Confirm',
+    yes: 'Yes',
+    no: 'No',
+
+    // Footer
+    footer: {
+      title: 'APA Detector',
+      description: 'Tool to verify the compliance of APA guidelines in academic documents.',
+      quickLinks: 'Quick Links',
+      resources: 'Resources',
+      apaGuide: 'APA Style Guide',
+      citationGuide: 'APA Citation Guide',
+      citationGenerator: 'Citation Generator',
+      copyright: 'All rights reserved.',
+      copyrightName: 'Miguel Angel Fabra Montaño - TheRainHermit'
+    },
+
+    aboutPage: {
+      title: 'About Us',
+      description1: 'We are a team passionate about education and technology, committed to facilitating the academic writing process through innovative tools.',
+      mission: 'Our mission is to help students, researchers, and professionals ensure their documents meet APA formatting standards, saving time and improving the quality of their academic work.'
+    },
+
+    // Contact Page
+    contactPage: {
+      title: 'Contact Us',
+      subtitle: 'Do you have any questions or comments? We are here to help you.',
+      address: 'Cali, Colombia',
+      email: 'contacto@apadetector.com',
+      phone: '+57 3194247585',
+      form: {
+        name: 'Name',
+        email: 'Email',
+        message: 'Message',
+        submit: 'Send Message'
+      },
+      successMessage: 'Message sent successfully! We will get back to you soon.',
+      errorMessage: 'Error sending message. Please try again.'
+    },
+
+    // Error messages
+    error: {
+      FILE_TYPE_NOT_ALLOWED: 'File type not allowed. Only PDF, Word, ODT, or TXT.',
+      FILE_TOO_LARGE: 'The file is too large. Maximum allowed: 5 MB.',
+      UPLOAD_ERROR: 'Error uploading file.',
+      NO_FILE: 'No file was uploaded or the file is invalid.',
+      ANALYSIS_ERROR: 'Error analyzing the document.',
+      GET_DOCUMENTS_ERROR: 'Error getting document history.',
+      DOCUMENT_NOT_FOUND: 'Document not found.',
+      GET_ANALYSIS_RESULTS_ERROR: 'Error getting results.',
+      INVALID_QUERY_PARAMS: 'Invalid query parameters.',
+    },
+
+    legal: {
+      privacyTitle: "Privacy Policy",
+      privacyDate: "Last updated: August 23, 2025",
+      privacySections: {
+        section1: "1. Introduction",
+        intro1: "Welcome to our APA 7th Edition Detector. This privacy policy explains how we collect, use, and protect your information when you use our free and open-source service.",
+        intro2: "We value your privacy and are committed to protecting your personal data. By using our APA detector, you accept the practices described in this policy.",
+        section2: "2. Information Collected",
+        info1: "Our service is designed with privacy in mind:",
+        infoList: [
+          "Text you enter: We process the text you introduce to detect APA compliance, but we do not permanently store this content.",
+          "Usage data: We collect anonymous information about how our service is used to improve its functionality.",
+          "Cookies and similar technologies: We use cookies to improve your experience and analyze site traffic."
+        ],
+        section3: "3. How We Use Your Information",
+        use1: "We use the information collected for:",
+        useList: [
+          "Provide APA detection service",
+          "Improve and optimize our service",
+          "Analyze usage trends to improve user experience",
+          "Ensure security and prevent abuse"
+        ],
+        section4: "4. Information Sharing",
+        share1: "We do not sell, trade, or transfer your personal information to third parties. We only share aggregated and anonymous information for analytical purposes.",
+        share2: "As an open-source project, collaborators can have access to aggregated and anonymous data to improve the service.",
+        section5: "5. Data Security",
+        security: "We implement technical and organizational security measures to protect the information processed by our service. However, no method of transmission by Internet or electronic storage is 100% secure.",
+        section6: "6. Your Privacy Rights",
+        rights1: "You have the right to:",
+        rightsList: [
+          "Access the information we have about you",
+          "Request the correction or deletion of your data",
+          "Oppose the processing of your data",
+          "Request the portability of your data"
+        ],
+        rights2: "To exercise these rights, you can contact us through the means provided in this policy.",
+        section7: "7. Changes to this Policy",
+        changes: "We may update this privacy policy periodically. We will notify you about significant changes by publishing the new policy on this site and updating the 'Last Updated' date.",
+        section8: "8. Contact",
+        contact1: "If you have questions about this privacy policy, you can contact us through:",
+        contactList: [
+          "Email: contacto@apadetector.com",
+          "GitHub Repository: github.com/TheRainHermit/APADetector/issues"
+        ]
+      },
+      termsTitle: "Terms Of Use",
+      termsDate: "Last updated: August 23, 2025",
+      termsSections: {
+        section1: "1. Acceptance of Terms",
+        intro1: "By accessing and using the APA Detector (\"the Service\"), you accept to comply with these Terms of Use and all applicable laws and regulations.",
+        section2: "2. Description of the Service",
+        desc1: "Our service offers:",
+        descList: [
+          "Automatic detection of APA 7th Edition compliance in academic texts",
+          "Suggestions to correct possible formatting errors",
+          "A free and open-source tool"
+        ],
+        disclaimer: "Limitation of liability: This service is an automated tool and may not detect all errors or may signal false positives. Always verify manually your citations and references.",
+        section3: "3. Open Source License",
+        license1: "This project is open source under the MIT license:",
+        licenseList: [
+          "You can use, copy, modify, merge, publish, distribute, sublicense and/or sell copies of the software.",
+          "The software is provided \"AS IS\", without warranty of any kind.",
+          "The original authorship recognition must be maintained in all copies or substantial parts of the software."
+        ],
+        section4: "4. User Conduct",
+        conduct1: "By using our service, you commit to:",
+        conductList: [
+          "Not use the service for illegal or unauthorized purposes",
+          "Not upload malicious content or that may damage the service",
+          "Not perform activities that may overload our infrastructure",
+          "Respect the intellectual property rights of third parties"
+        ],
+        section5: "5. User Content",
+        userContent: "You retain all intellectual property rights over the text you enter into our service. By using the service, you grant us a limited license to process your text solely for the purpose of providing the APA detection service.",
+        section6: "6. Limitation of Liability",
+        limitation1: "The service is provided \"as is\" and \"as available\". We do not guarantee that:",
+        limitationList: [
+          "The service detects all APA errors",
+          "The service is free of interruptions or errors",
+          "The results obtained are accurate or reliable"
+        ],
+        limitation2: "We will not be liable for any indirect, incidental or consequential damages resulting from the use or inability to use the service.",
+        section7: "7. Service Modifications",
+        modifications1: "We reserve the right to:",
+        modificationsList: [
+          "Modify or discontinue the service, temporarily or permanently",
+          "Update these Terms of Use periodically",
+          "Limit the use of the service if necessary"
+        ],
+        modifications2: "Continuous updates will be made through our open-source repository.",
+        section8: "8. Applicable Law",
+        law: "These Terms of Use will be governed and construed in accordance with Colombian law, without considering its provisions on conflicts of law.",
+        section9: "9. Contact",
+        contact1: "For questions about these Terms of Use, you can contact us through:",
+        contactList: [
+          "Email: contacto@apadetector.com",
+          "GitHub Repository: github.com/TheRainHermit/APADetector/issues"
+        ]
+      }
+    },
+  },
+};
+
+export default I18N;

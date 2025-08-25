@@ -6,107 +6,227 @@ import textract from 'textract';
 // Configuración internacionalizada (i18n)
 const i18nConfig = {
   es: {
-    portadaGroups: {
-      universidad: [
-        'universidad', 'institución universitaria', 'uv', 'instituto', 'instituto tecnológico', 'escuela'
-      ],
-      facultad: [
-        'facultad', 'facultad de', 'división', 'departamento', 'coordinación'
-      ],
-      titulo: [
-        'título', 'titulo', 'integrador', 'proyecto de grado', 'proyecto', 'trabajo', 'tesis', 'tesina'
-      ],
-      autor: [
-        'autor', 'autora', 'elaboró', 'elaborada por', 'presenta', 'presentado por', 'presentada por'
-      ],
-      fecha: [
-        'fecha', 'periodo', 'semestre', 'año', 'mes', 'verano', 'primavera', 'otoño', 'invierno'
-      ]
+    // General terms
+    general: {
+      error: 'Error',
+      warning: 'Advertencia',
+      suggestion: 'Sugerencia',
+      info: 'Información',
+      success: 'Éxito',
+      minor: 'Revisión menor',
+      required: 'Requerido',
+      optional: 'Opcional'
     },
-    resumenKeywords: ['resumen'],
-    referenciasKeywords: ['referencias', 'bibliografía', 'bibliografia'],
+
+    // Keywords for section detection
+    resumenKeywords: ['resumen', 'abstract', 'resumen ejecutivo'],
+    referenciasKeywords: ['referencias', 'references', 'bibliografía', 'bibliography', 'bibliographic references'],
     headers: [
-      ['introducción', 'intro'],
-      ['metodología', 'métodos', 'metodologías'],
-      ['resultados', 'resultados obtenidos'],
-      ['discusión', 'análisis', 'discusión de resultados'],
-      ['conclusión', 'conclusiones', 'cierre', 'consideraciones finales']
+      ['introducción', 'introduccion', 'introduction'],
+      ['metodología', 'metodologia', 'methodology', 'métodos', 'metodos', 'methods'],
+      ['resultados', 'results', 'hallazgos', 'findings'],
+      ['discusión', 'discusion', 'discussion', 'análisis', 'analisis', 'analysis'],
+      ['conclusiones', 'conclusions', 'conclusión', 'conclusion'],
+      ['referencias', 'references', 'bibliografía', 'bibliography']
     ],
+
+    // Document sections
+    sections: {
+      general: 'General',
+      portada: 'Portada',
+      resumen: 'Resumen',
+      referencias: 'Referencias',
+      citas: 'Citas',
+      encabezados: 'Encabezados',
+      abstract: 'Resumen',
+      bibliografia: 'Bibliografía',
+      conclusiones: 'Conclusiones',
+      metodologia: 'Metodología',
+      resultados: 'Resultados',
+      discusion: 'Discusión',
+      introduccion: 'Introducción',
+      anexos: 'Anexos',
+      apendices: 'Apéndices',
+      agradecimientos: 'Agradecimientos'
+    },
+
+    // Messages
     messages: {
-      portada: 'No se detectó una portada completa (universidad, facultad, título, autor, fecha).',
-      resumen: 'No se encontró una sección de resumen.',
-      referencias: 'No se encontró una sección de referencias.',
-      sugerenciaPortada: 'Asegúrate de incluir todos los elementos de la portada según APA.',
-      sugerenciaResumen: 'Incluye una sección de resumen después de la portada.',
-      sugerenciaReferencias: 'Incluye una sección de referencias al final del documento.',
-      headerMissing: nombre => `No se encontró la sección "${nombre}".`,
-      headerSuggestion: nombre => `Incluye una sección "${nombre}" en tu documento.`,
-      headerOrderMissing: 'No se pudo evaluar el orden de los encabezados principales porque falta(n) uno o más encabezados clave.',
-      headerOrderSuggestion: 'Asegúrate de incluir todos los encabezados principales (Introducción, Metodología, Resultados, Discusión, Conclusión) para poder evaluar el orden APA.',
-      headerOrderWrong: 'Los encabezados principales no están en el orden recomendado APA.',
-      headerOrderWrongSuggestion: 'Asegúrate de que la estructura del documento siga el orden APA: Introducción, Metodología, Resultados, Discusión, Conclusión.',
-      headerOrderCorrect: 'Los encabezados principales están en el orden correcto.',
-      citationsFew: 'No se detectaron suficientes citas en el texto con formato APA (Apellido, año) o variantes.',
-      citationsFewSuggestion: 'Incluye citas en el texto siguiendo el formato APA, por ejemplo: (Pérez & Gómez, 2020), (Smith et al., 2020).',
-      citationsCount: num => `Se detectaron ${num} cita(s) en el texto con formato APA o variantes.`,
-      minor: 'El documento solo requiere revisión menor. No se detectaron errores ni advertencias importantes.',
-      minorSuggestion: 'Revisa los detalles informativos para mejorar aún más tu documento.',
-      success: '¡El documento cumple con las validaciones APA básicas!'
+      documentSize: {
+        tooManyLines: (lines, max) => `El documento tiene demasiadas líneas (${lines}). El límite es ${max} líneas.`,
+        tooManyWords: (words, max) => `El documento tiene demasiadas palabras (${words}). El límite es ${max} palabras.`,
+        notEnoughPages: (pages) => `El documento tiene muy pocas páginas (${pages}). Se recomiendan al menos 2 páginas.`,
+        tooShort: (words, min) => `El documento es muy corto (${words} palabras). Se recomiendan al menos ${min} palabras.`,
+        reduceSize: 'Por favor, reduce el tamaño del documento dividiéndolo en archivos más pequeños.',
+        reduceContent: 'Por favor, reduce el tamaño del documento eliminando contenido innecesario.',
+        increasePages: 'Considera ampliar el contenido de tu documento para cumplir con los requisitos mínimos.',
+        increaseWords: 'Amplía el contenido de tu documento para cumplir con los requisitos mínimos.'
+      },
+
+      coverPage: {
+        incomplete: 'Faltan elementos en la portada:',
+        suggestion: 'Asegúrate de incluir todos los elementos de la portada según el formato APA.'
+      },
+
+      abstract: {
+        notFound: 'No se encontró una sección de resumen o abstract en el documento.',
+        suggestion: 'Incluye un resumen o abstract al inicio de tu documento siguiendo el formato APA.'
+      },
+
+      references: {
+        notFound: 'No se encontraron referencias en formato APA en el documento.',
+        suggestion: 'Asegúrate de incluir una sección de referencias al final del documento siguiendo el formato APA.',
+        formatSuggestion: 'Revisa el formato de las referencias para que sigan el estándar APA.',
+        usingBibliography: 'Se encontró una sección de Bibliografía en lugar de Referencias.',
+        useReferences: 'En formato APA se recomienda usar "Referencias" en lugar de "Bibliografía".',
+        valid: (count) => `Se encontraron ${count} referencias en formato APA.`,
+        invalidFormat: (count) => `Se encontraron ${count} referencias que no siguen el formato APA estándar.`
+      },
+
+      headers: {
+        missing: 'Faltan los siguientes encabezados:',
+        suggestion: 'Asegúrate de incluir todos los encabezados requeridos en tu documento.',
+        wrongOrder: 'El orden de los encabezados no sigue el formato estándar.',
+        orderSuggestion: 'Revisa el orden de las secciones según las normas APA.',
+        correctOrder: 'El orden de los encabezados sigue el formato estándar.'
+      },
+
+      citations: {
+        notEnough: 'No se detectaron suficientes citas en el texto.',
+        suggestion: 'Incluye citas en el texto siguiendo el formato APA.',
+        count: {
+          none: 'No se encontraron citas en el texto.',
+          one: 'Se encontró una cita en el texto.',
+          many: (count) => `Se encontraron ${count} citas en el texto.`
+        }
+      },
+
+      feedback: {
+        minorReview: 'El documento solo requiere revisión menor.',
+        generalSuggestion: 'Revisa los detalles informativos para mejorar aún más tu documento.',
+        validationSuccess: 'El documento cumple con las validaciones APA básicas.'
+      }
     }
   },
+
   en: {
-    portadaGroups: {
-      university: [
-        'university', 'university institution', 'uv', 'institute', 'technological institute', 'school'
-      ],
-      faculty: [
-        'faculty', 'faculty of', 'division', 'department', 'coordination'
-      ],
-      title: [
-        'title', 'integrator', 'degree project', 'project', 'work', 'thesis', 'dissertation'
-      ],
-      author: [
-        'author', 'authoress', 'prepared', 'prepared by', 'presents', 'presented by'
-      ],
-      date: [
-        'date', 'period', 'semester', 'year', 'month', 'summer', 'spring', 'autumn', 'winter'
-      ]
+    general: {
+      error: 'Error',
+      warning: 'Warning',
+      suggestion: 'Suggestion',
+      info: 'Information',
+      success: 'Success',
+      minor: 'Minor Review',
+      required: 'Required',
+      optional: 'Optional'
     },
-    resumenKeywords: ['abstract'],
-    referenciasKeywords: ['references', 'bibliography'],
+
+    resumenKeywords: ['abstract', 'summary', 'executive summary'],
+    referenciasKeywords: ['references', 'bibliography', 'bibliographic references', 'citations'],
     headers: [
-      ['introduction', 'intro'],
-      ['methodology', 'methods'],
-      ['results', 'results obtained'],
-      ['discussion', 'analysis', 'discussion'],
-      ['conclusion', 'closure', 'final considerations']
+      ['introduction', 'introducción', 'introduccion'],
+      ['methodology', 'methods', 'métodos', 'metodos', 'metodología', 'metodologia'],
+      ['results', 'findings', 'resultados', 'hallazgos'],
+      ['discussion', 'analysis', 'discusión', 'discusion', 'análisis', 'analisis'],
+      ['conclusions', 'conclusion', 'conclusiones', 'conclusión'],
+      ['references', 'bibliography', 'referencias', 'bibliografía']
     ],
+
+    sections: {
+      general: 'General',
+      portada: 'Cover Page',
+      resumen: 'Abstract',
+      referencias: 'References',
+      citas: 'Citations',
+      encabezados: 'Headers',
+      abstract: 'Abstract',
+      bibliografia: 'Bibliography',
+      conclusiones: 'Conclusions',
+      metodologia: 'Methodology',
+      resultados: 'Results',
+      discusion: 'Discussion',
+      introduccion: 'Introduction',
+      anexos: 'Annexes',
+      apendices: 'Appendices',
+      agradecimientos: 'Acknowledgments'
+    },
+
     messages: {
-      portada: 'No complete cover page detected (university, faculty, title, author, date).',
-      resumen: 'No abstract section found.',
-      referencias: 'No references section found.',
-      sugerenciaPortada: 'Make sure to include all cover page elements according to APA.',
-      sugerenciaResumen: 'Include an abstract section after the cover page.',
-      sugerenciaReferencias: 'Include a references section at the end of the document.',
-      headerMissing: name => `Section "${name}" not found.`,
-      headerSuggestion: name => `Include a "${name}" section in your document.`,
-      headerOrderMissing: 'Could not evaluate the order of main headers because one or more key headers are missing.',
-      headerOrderSuggestion: 'Make sure to include all main headers (Introduction, Methodology, Results, Discussion, Conclusion) to evaluate APA order.',
-      headerOrderWrong: 'Main headers are not in the recommended APA order.',
-      headerOrderWrongSuggestion: 'Ensure your document follows the APA structure: Introduction, Methodology, Results, Discussion, Conclusion.',
-      headerOrderCorrect: 'Main headers are in the correct order.',
-      citationsFew: 'Not enough APA-style citations detected in the text (Author, year) or variants.',
-      citationsFewSuggestion: 'Include citations in APA format, e.g.: (Smith & Jones, 2020), (Smith et al., 2020).',
-      citationsCount: num => `${num} APA-style citation(s) or variants detected in the text.`,
-      minor: 'The document only requires minor review. No major errors or warnings were found.',
-      minorSuggestion: 'Check the informational details to further improve your document.',
-      success: 'The document passes basic APA validations!'
+      documentSize: {
+        tooManyLines: (lines, max) => `The document has too many lines (${lines}). The limit is ${max} lines.`,
+        tooManyWords: (words, max) => `The document has too many words (${words}). The limit is ${max} words.`,
+        notEnoughPages: (pages) => `The document has too few pages (${pages}). At least 2 pages are recommended.`,
+        tooShort: (words, min) => `The document is too short (${words} words). At least ${min} words are recommended.`,
+        reduceSize: 'Please reduce the document size by splitting it into smaller files.',
+        reduceContent: 'Please reduce the document size by removing unnecessary content.',
+        increasePages: 'Consider expanding your document content to meet the minimum requirements.',
+        increaseWords: 'Expand your document content to meet the minimum requirements.'
+      },
+
+      coverPage: {
+        incomplete: 'Missing elements in the cover page:',
+        suggestion: 'Make sure to include all cover page elements according to APA format.'
+      },
+
+      abstract: {
+        notFound: 'No abstract section was found in the document.',
+        suggestion: 'Include an abstract at the beginning of your document following APA format.'
+      },
+
+      references: {
+        notFound: 'No APA-formatted references were found in the document.',
+        suggestion: 'Make sure to include a references section at the end of your document following APA format.',
+        formatSuggestion: 'Review the format of the references to ensure they follow APA standards.',
+        usingBibliography: 'A Bibliography section was found instead of References.',
+        useReferences: 'In APA format, it is recommended to use "References" instead of "Bibliography".',
+        valid: (count) => `${count} APA-formatted references were found.`,
+        invalidFormat: (count) => `${count} references were found that do not follow the standard APA format.`
+      },
+
+      headers: {
+        missing: 'The following headers are missing:',
+        suggestion: 'Make sure to include all required headers in your document.',
+        wrongOrder: 'The order of the headers does not follow the standard format.',
+        orderSuggestion: 'Review the order of sections according to APA guidelines.',
+        correctOrder: 'The order of the headers follows the standard format.'
+      },
+
+      citations: {
+        notEnough: 'Not enough citations were detected in the text.',
+        suggestion: 'Include citations in the text following APA format.',
+        count: {
+          none: 'No citations were found in the text.',
+          one: 'One citation was found in the text.',
+          many: (count) => `A total of ${count} citations were found in the text.`
+        }
+      },
+
+      feedback: {
+        minorReview: 'The document only requires minor review.',
+        generalSuggestion: 'Review the informational details to further improve your document.',
+        validationSuccess: 'The document passes basic APA validations.'
+      }
     }
   }
-  // Puedes agregar más idiomas aquí
 };
 
-//Normalización del texto
+// Helper function to get translated messages with deep lookup
+export function t(key, params = {}, lang = 'es') {
+  // Soporta claves anidadas con notación de punto
+  const getNested = (obj, path) => {
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+  };
+  let str = getNested(i18nConfig[lang], key) || key;
+  if (params && typeof str === 'string') {
+    Object.entries(params).forEach(([k, v]) => {
+      const value = Array.isArray(v) ? v.join(', ') : (v ?? '');
+      str = str.replace(new RegExp(`{${k}}`, 'g'), value);
+    });
+  }
+  return str;
+}
+
+// Normalización del texto
 function normalize(str) {
   return str
     .toLowerCase()                        // Convierte todo a minúsculas
@@ -164,7 +284,7 @@ export async function analyzeFile(filePath, mimetype, lang = 'es') {
   try {
     if (!fs.existsSync(filePath)) {
       console.error('File does not exist:', filePath);
-      throw new Error('El archivo no existe en el servidor.');
+      throw new Error(t('general.error', {}, lang));
     }
 
     const stat = fs.statSync(filePath);
@@ -196,7 +316,7 @@ export async function analyzeFile(filePath, mimetype, lang = 'es') {
         const buffer = fs.readFileSync(filePath);
         const { value } = await mammoth.extractRawText({ buffer });
         text = value;
-        if (!text || text.trim().length === 0) throw new Error('Texto vacío tras extracción con Mammoth');
+        if (!text || text.trim().length === 0) throw new Error(t('general.error', {}, lang));
         //console.log('Texto extraído por Mammoth (primeros 2000):', text.slice(0, 2000));
         //console.log('Texto extraído por Mammoth (últimos 2000):', text.slice(-2000));
       } catch (err) {
@@ -212,12 +332,12 @@ export async function analyzeFile(filePath, mimetype, lang = 'es') {
               resolve(extractedText);
             });
           });
-          if (!text || text.trim().length === 0) throw new Error('Texto vacío tras extracción con textract');
+          if (!text || text.trim().length === 0) throw new Error(t('general.error', {}, lang));
           //console.log('Texto extraído por textract (primeros 2000):', text.slice(0, 2000));
           //console.log('Texto extraído por textract (últimos 2000):', text.slice(-2000));
         } catch (err2) {
           console.error('Error extrayendo DOCX con textract:', err2);
-          throw new Error('No se pudo extraer el texto del archivo DOCX. Intenta guardarlo de nuevo desde Word o usa otro archivo.');
+          throw new Error(t('general.error', {}, lang));
         }
       }
     } else if (mimetype === 'application/vnd.oasis.opendocument.text') {
@@ -231,7 +351,7 @@ export async function analyzeFile(filePath, mimetype, lang = 'es') {
         });
       } catch (err) {
         console.error('Error extrayendo ODT:', err);
-        throw new Error('No se pudo extraer el texto del archivo ODT.');
+        throw new Error(t('general.error', {}, lang));
       }
     } else {
       // Por defecto: trata como texto plano
@@ -239,12 +359,12 @@ export async function analyzeFile(filePath, mimetype, lang = 'es') {
         text = fs.readFileSync(filePath, 'utf8');
       } catch (err) {
         console.error('Error leyendo archivo como texto plano:', err);
-        throw new Error('No se pudo leer el archivo como texto.');
+        throw new Error(t('general.error', {}, lang));
       }
     }
   } catch (err) {
     console.error('ERROR EN ANALISIS:', err);
-    throw new Error(err.message || 'No se pudo analizar el archivo. Puede estar corrupto o tener un formato no soportado.');
+    throw new Error(t('general.error', {}, lang));
   }
 
   // Normalizar el texto (¡ahora sí, después de toda la extracción y fallback!)
@@ -259,9 +379,14 @@ export async function analyzeFile(filePath, mimetype, lang = 'es') {
   if (linesArray.length > MAX_LINES) {
     results.push({
       type: 'error',
-      title: lang === 'en' ? 'Error' : 'Error',
-      message: `El documento es demasiado grande (${linesArray.length} líneas).`,
-      suggestion: `Reduce el documento a menos de ${MAX_LINES} líneas antes de analizarlo.`
+      titleKey: 'general.error',
+      messageKey: 'messages.documentSize.tooManyLines',
+      title: t('general.error', {}, lang),
+      message: t('messages.documentSize.tooManyLines', { lines: linesArray.length, max: MAX_LINES }, lang),
+      suggestion: t('messages.documentSize.reduceSize', {}, lang),
+      section: t('sections.general', {}, lang),
+      suggestionKey: 'messages.documentSize.reduceSize',
+      sectionKey: 'general'
     });
     return { results, pieChartData: [], sectionChartData: [] };
   }
@@ -269,9 +394,14 @@ export async function analyzeFile(filePath, mimetype, lang = 'es') {
   if (totalWords > MAX_WORDS) {
     results.push({
       type: 'error',
-      title: lang === 'en' ? 'Error' : 'Error',
-      message: `El documento es demasiado grande (${totalWords} palabras).`,
-      suggestion: `Reduce el documento a menos de ${MAX_WORDS} palabras antes de analizarlo.`
+      titleKey: 'general.error',
+      messageKey: 'messages.documentSize.tooManyWords',
+      title: t('general.error', {}, lang),
+      message: t('messages.documentSize.tooManyWords', { words: totalWords, max: MAX_WORDS }, lang),
+      suggestion: t('messages.documentSize.reduceContent', {}, lang),
+      section: t('sections.general', {}, lang),
+      suggestionKey: 'messages.documentSize.reduceContent',
+      sectionKey: 'general'
     });
     return { results, pieChartData: [], sectionChartData: [] };
   }
@@ -280,9 +410,14 @@ export async function analyzeFile(filePath, mimetype, lang = 'es') {
   if (numPages !== null && numPages < 2) {
     results.push({
       type: 'warning',
-      title: lang === 'en' ? 'Warning' : 'Advertencia',
-      message: `El documento PDF tiene solo ${numPages} página(s).`,
-      suggestion: 'Se recomienda que el documento tenga al menos 2 páginas.'
+      titleKey: 'general.warning',
+      messageKey: 'messages.documentSize.notEnoughPages',
+      title: t('general.warning', {}, lang),
+      message: t('messages.documentSize.notEnoughPages', { pages: numPages }, lang),
+      suggestion: t('messages.documentSize.increasePages', {}, lang),
+      section: t('sections.general', {}, lang),
+      suggestionKey: 'messages.documentSize.increasePages',
+      sectionKey: 'general'
     });
   }
 
@@ -292,9 +427,14 @@ export async function analyzeFile(filePath, mimetype, lang = 'es') {
   if (wordCount < minWords) {
     results.push({
       type: 'warning',
-      title: lang === 'en' ? 'Warning' : 'Advertencia',
-      message: `El documento es muy corto (${wordCount} palabras).`,
-      suggestion: `Asegúrate de que el documento tenga al menos ${minWords} palabras para cumplir con los estándares académicos.`
+      titleKey: 'general.warning',
+      messageKey: 'messages.documentSize.tooShort',
+      title: t('general.warning', {}, lang),
+      message: t('messages.documentSize.tooShort', { words: wordCount, min: minWords }, lang),
+      suggestion: t('messages.documentSize.increaseWords', {}, lang),
+      section: t('sections.general', {}, lang),
+      suggestionKey: 'messages.documentSize.increaseWords',
+      sectionKey: 'general'
     });
   }
 
@@ -344,13 +484,13 @@ export async function analyzeFile(filePath, mimetype, lang = 'es') {
   const normText = text ? text.normalize('NFC') : '';
   // --- Detección robusta de portada con logs y variantes ---
   const portadaLines = portadaHeuristicaText
-  .normalize('NFC')
-  .split('\n')
-  .map(l => l.trim())
-  .filter(l =>
-    l.length > 0 &&
-    !/^(Figura|Tabla|Índice|Pág\.?|Capítulo|Sección|Resumen|Abstract)/i.test(l)
-  );
+    .normalize('NFC')
+    .split('\n')
+    .map(l => l.trim())
+    .filter(l =>
+      l.length > 0 &&
+      !/^(Figura|Tabla|Índice|Pág\.?|Capítulo|Sección|Resumen|Abstract)/i.test(l)
+    );
   let detected = {
     universidad: null,
     facultad: null,
@@ -380,9 +520,9 @@ export async function analyzeFile(filePath, mimetype, lang = 'es') {
 
   // Universidad: toma la última coincidencia relevante en portadaVentanas
   const universidadRegex = /(UNIVERSIDAD|INSTITUCION|INSTITUCIÓN|UNIVERSITARIA|UNIVERSITARIO)/i;
-// Solo buscar en las primeras 25 líneas de portadaLines
-const universidadCandidates = portadaLines.slice(0, 25).filter(l => universidadRegex.test(l));
-detected.universidad = universidadCandidates.length > 0 ? universidadCandidates[universidadCandidates.length - 1] : null;
+  // Solo buscar en las primeras 25 líneas de portadaLines
+  const universidadCandidates = portadaLines.slice(0, 25).filter(l => universidadRegex.test(l));
+  detected.universidad = universidadCandidates.length > 0 ? universidadCandidates[universidadCandidates.length - 1] : null;
   //console.log('Universidad detectada:', detected.universidad);
 
   // Facultad (o variantes)
@@ -421,8 +561,8 @@ detected.universidad = universidadCandidates.length > 0 ? universidadCandidates[
       words.every(w =>
         (w.length >= 3) &&
         (
-          /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+$/.test(w) ||
-          /^[A-ZÁÉÍÓÚÑ]+$/.test(w)
+          /^[A-ZÁÉÍÓÚÜÑ][a-záéíóúüñ]+$/.test(w) ||
+          /^[A-ZÁÉÍÓÚÜÑ]+$/.test(w)
         ) &&
         !palabrasNoNombre.includes(w.toUpperCase())
       ) &&
@@ -442,7 +582,7 @@ detected.universidad = universidadCandidates.length > 0 ? universidadCandidates[
   detected.fecha = portadaVentanas.find(l => {
     const norm = limpiarLinea(l);
     return /\b(20\d{2}|19\d{2})\b/.test(norm) ||
-      /\b\d{1,2} DE [A-ZÁÉÍÓÚÑ]+ DE \d{4}\b/.test(norm);
+      /\b\d{1,2} DE [A-ZÁÉÍÓÚÜÑ]+ DE \d{4}\b/.test(norm);
   });
   //console.log('Fecha detectada:', detected.fecha);
 
@@ -461,52 +601,26 @@ detected.universidad = universidadCandidates.length > 0 ? universidadCandidates[
   if (!detected.fecha) portadaFaltantes.push('fecha');
 
   if (portadaFaltantes.length > 0) {
-    // Traducción automática de nombres de grupo para el mensaje
-    const groupLabels = {
-      es: {
-        universidad: 'universidad',
-        facultad: 'facultad',
-        titulo: 'título',
-        autor: 'autor',
-        fecha: 'fecha'
-      },
-      en: {
-        universidad: 'university',
-        facultad: 'faculty',
-        titulo: 'title',
-        autor: 'author',
-        fecha: 'date',
-        university: 'university',
-        faculty: 'faculty',
-        title: 'title',
-        author: 'author',
-        date: 'date'
-      }
-    };
+    // Get the missing elements as a comma-separated string
+    const missingElements = portadaFaltantes.join(', ');
 
-    // Verifica si ya existe una advertencia de portada incompleta
-    const portadaMsgStartEs = 'No se detectó una portada completa';
-    const portadaMsgStartEn = 'The cover page is incomplete';
-    const yaExiste = results.some(
-      r =>
-        r.type === 'warning' &&
-        r.message &&
-        (r.message.startsWith(portadaMsgStartEs) || r.message.startsWith(portadaMsgStartEn))
-    );
+    // Create the message using the translation function
+    const message = t('messages.coverPage.incomplete', { missing: missingElements }, lang);
+    const missingList = Array.isArray(missingElements) ? missingElements : (missingElements ? [missingElements] : []);
 
-    if (!yaExiste) {
-      results.push({
-        type: 'warning',
-        title: lang === 'en' ? 'Warning' : 'Advertencia',
-        message: lang === 'en'
-          ? `The cover page is incomplete. Missing: ${portadaFaltantes.map(g => groupLabels.en[g] || g).join(', ')}.`
-          : `No se detectó una portada completa. Faltan: ${portadaFaltantes.map(g => groupLabels.es[g] || g).join(', ')}.`,
-        suggestion: lang === 'en'
-          ? 'Make sure to include all required cover page elements according to APA.'
-          : 'Asegúrate de incluir todos los elementos de la portada según APA.',
-        section: lang === 'en' ? 'Cover page' : 'Portada'
-      });
-    }
+    results.push({
+      type: 'warning',
+      titleKey: 'general.warning',
+      messageKey: 'messages.coverPage.incomplete',
+      messageParams: { missing: portadaFaltantes },
+      title: t('general.warning', {}, lang),
+      suggestion: t('messages.coverPage.suggestion', {}, lang),
+      section: t('sections.portada', {}, lang),
+      suggestionKey: 'messages.coverPage.suggestion',
+      sectionKey: 'portada',
+      // Incluye los elementos faltantes crudos para posible uso en frontend
+      missingElements: missingElements
+    });
   }
 
   // 2. Resumen/Abstract
@@ -514,10 +628,13 @@ detected.universidad = universidadCandidates.length > 0 ? universidadCandidates[
   if (!resumenRegex.test(text)) {
     results.push({
       type: 'warning',
-      title: lang === 'en' ? 'Warning' : 'Advertencia',
-      message: config.messages.resumen,
-      suggestion: config.messages.sugerenciaResumen,
-      section: lang === 'en' ? 'Abstract' : 'Resumen'
+      titleKey: 'general.warning',
+      messageKey: 'messages.abstract.notFound',
+      title: t('general.warning', {}, lang),
+      suggestion: t('messages.abstract.suggestion', {}, lang),
+      section: t('sections.resumen', {}, lang),
+      suggestionKey: 'messages.abstract.suggestion',
+      sectionKey: 'resumen'
     });
   }
 
@@ -587,14 +704,13 @@ detected.universidad = universidadCandidates.length > 0 ? universidadCandidates[
     // ADVERTENCIA: Se encontró "Bibliografía" pero no "Referencias"
     results.push({
       type: 'warning',
-      title: lang === 'en' ? 'Warning' : 'Advertencia',
-      message: lang === 'en'
-        ? 'The document uses "Bibliografía" instead of "Referencias" as required by APA style.'
-        : 'El documento utiliza "Bibliografía" en lugar de "Referencias", que es lo requerido por el estilo APA.',
-      suggestion: lang === 'en'
-        ? 'Change the section title to "Referencias" to comply with APA.'
-        : 'Cambia el título de la sección a "Referencias" para cumplir con APA.',
-      section: lang === 'en' ? 'References' : 'Referencias'
+      titleKey: 'general.warning',
+      messageKey: 'messages.references.usingBibliography',
+      title: t('general.warning', {}, lang),
+      suggestion: t('messages.references.useReferences', {}, lang),
+      section: t('sections.referencias', {}, lang),
+      suggestionKey: 'messages.references.useReferences',
+      sectionKey: 'referencias'
     });
   }
 
@@ -635,15 +751,14 @@ detected.universidad = universidadCandidates.length > 0 ? universidadCandidates[
     // Solo mostrar advertencia si hay líneas que parecen referencias pero no cumplen APA
     if (numReferences === 0 && tolerantRefLines.length > 0) {
       results.push({
-        type: 'suggestion',
-        title: lang === 'en' ? 'Suggestion' : 'Sugerencia',
-        message: lang === 'en'
-          ? `${tolerantRefLines.length} reference(s) detected that do not appear to be in APA format.`
-          : `Se detectaron ${tolerantRefLines.length} referencia(s) que no parecen estar en formato APA.`,
-        suggestion: lang === 'en'
-          ? 'Make sure each reference follows the format: Lastname, Initial. (Year). Title. Publisher.'
-          : 'Asegúrate de que cada referencia siga el formato: Apellido, Inicial. (Año). Título. Editorial.',
-        section: lang === 'en' ? 'References' : 'Referencias'
+        type: 'warning',
+        titleKey: 'general.warning',
+        messageKey: 'messages.references.notFound',
+        title: t('general.warning', {}, lang),
+        suggestion: t('messages.references.suggestion', {}, lang),
+        section: t('sections.referencias', {}, lang),
+        suggestionKey: 'messages.references.suggestion',
+        sectionKey: 'referencias'
       });
     }
     // DEPURACIÓN: muestra las primeras 5 referencias tolerantes detectadas
@@ -660,134 +775,222 @@ detected.universidad = universidadCandidates.length > 0 ? universidadCandidates[
     if (filteredRefLines.length > 0 && badRefs > 0) {
       results.push({
         type: 'suggestion',
-        title: lang === 'en' ? 'Suggestion' : 'Sugerencia',
-        message: lang === 'en'
-          ? `${badRefs} reference(s) do not appear to be in APA format.`
-          : `Se detectaron ${badRefs} referencia(s) que no parecen estar en formato APA.`,
-        suggestion: lang === 'en'
-          ? 'Ensure each reference follows the format: Lastname, Initial. (Year). Title. Publisher.'
-          : 'Asegúrate de que cada referencia siga el formato: Apellido, Inicial. (Año). Título. Editorial.'
+        titleKey: 'general.suggestion',
+        messageKey: 'messages.references.invalidFormat',
+        title: t('general.suggestion', {}, lang),
+        message: t('messages.references.invalidFormat', { count: badRefs }, lang),
+        suggestion: t('messages.references.formatSuggestion', {}, lang),
+        section: t('sections.referencias', {}, lang),
+        suggestionKey: 'messages.references.formatSuggestion',
+        sectionKey: 'referencias'
       });
     }
 
     if (numReferences > 0) {
       results.push({
         type: 'info',
-        title: lang === 'en' ? 'Info' : 'Información',
-        message: lang === 'en'
-          ? `${numReferences} reference(s) detected in the References section.`
-          : `Se detectaron ${numReferences} referencia(s) en la sección de referencias.`,
-        suggestion: ''
+        titleKey: 'general.info',
+        messageKey: 'messages.references.valid',
+        title: t('general.info', {}, lang),
+        message: t('messages.references.valid', { count: numReferences }, lang),
+        section: t('sections.referencias', {}, lang),
+        sectionKey: 'referencias'
       });
-    }
-
-    if (numReferences === 0) {
+    } else {
       results.push({
         type: 'warning',
-        title: lang === 'en' ? 'Warning' : 'Advertencia',
-        message: lang === 'en'
-          ? 'No valid references detected in the References section.'
-          : 'No se detectaron referencias válidas en la sección de referencias.',
-        suggestion: lang === 'en'
-          ? 'Make sure to include APA-formatted references in the corresponding section.'
-          : 'Asegúrate de incluir referencias en formato APA en la sección correspondiente.'
+        titleKey: 'general.warning',
+        messageKey: 'messages.references.notFound',
+        title: t('general.warning', {}, lang),
+        message: t('messages.references.notFound', {}, lang),
+        suggestion: t('messages.references.suggestion', {}, lang),
+        section: t('sections.referencias', {}, lang),
+        suggestionKey: 'messages.references.suggestion',
+        sectionKey: 'referencias'
       });
     }
+  } else {
+    // No references section found at all
+    results.push({
+      type: 'warning',
+      titleKey: 'general.warning',
+      messageKey: 'messages.references.sectionNotFound',
+      title: t('general.warning', {}, lang),
+      message: t('messages.references.sectionNotFound', {}, lang),
+      suggestion: t('messages.references.suggestion', {}, lang),
+      section: t('sections.referencias', {}, lang),
+      suggestionKey: 'messages.references.suggestion',
+      sectionKey: 'referencias'
+    });
   }
 
-  // 4. Encabezados principales (headers)
+
+  // 5. Encabezados principales (headers)
   // --- Detección de encabezados principales (APA) ---
   const headers = config.headers;
   const missingHeaders = [];
   const headerPositions = [];
+  const normalizedTexto = text.toLowerCase(); // Convertir el texto a minúsculas para búsqueda insensible a mayúsculas
 
-  for (const headerVariants of headers) {
+  // Primera pasada: buscar encabezados y registrar sus posiciones
+  for (const [index, headerVariants] of headers.entries()) {
     let found = false;
     let minPos = Infinity;
+
     for (const variant of headerVariants) {
-      const variantNorm = normalize(variant);
-      // Usar regex robusto para detectar encabezados al inicio de línea, tras salto de línea, etc.
-      const regex = new RegExp(`(^|\\n|\\r)\\s*${variantNorm}\\s*($|\\n|\\r|:)`, 'i');
-      const match = normalizedText.search(regex);
-      if (match >= 0 && match < minPos) minPos = match;
-      if (match >= 0) found = true;
+      // Convertir la variante a minúsculas para coincidencia insensible a mayúsculas
+      const variantLower = variant.toLowerCase();
+      // Buscar todas las ocurrencias del encabezado (sin usar \b para evitar problemas con acentos)
+      const regex = new RegExp(`(^|\\s)${escapeRegExp(variantLower)}(\\s|$|:)`, 'gi');
+      let match;
+
+      // Buscar en todo el texto
+      while ((match = regex.exec(normalizedTexto)) !== null) {
+        // Verificar que sea una coincidencia completa de palabra
+        const matchText = match[0].toLowerCase().trim();
+        if (matchText === variantLower) {
+          const pos = match.index;
+          if (pos < minPos) {
+            minPos = pos;
+          }
+          found = true;
+        }
+      }
     }
-    if (!found) missingHeaders.push(headerVariants[0][0].toUpperCase() + headerVariants[0].slice(1));
-    else headerPositions.push(minPos);
+
+    if (found) {
+      headerPositions.push({
+        name: headerVariants[0], // Usar el primer nombre del encabezado como identificador
+        position: minPos
+      });
+    } else {
+      // Solo agregar a missingHeaders si no se encontró ninguna variante
+      missingHeaders.push(headerVariants[0]);
+    }
   }
+
+  //console.log('Missing headers:', missingHeaders);
+  //console.log('Header positions:', headerPositions);
 
   // Resultado enriquecido: orden de encabezados
   // Solo evalúa el orden si no faltan encabezados principales
   if (missingHeaders.length > 0) {
     results.push({
       type: 'info',
-      title: lang === 'en' ? 'Info' : 'Información',
-      message: config.messages.headerOrderMissing,
-      suggestion: config.messages.headerOrderSuggestion,
-      section: lang === 'en' ? 'Headers' : 'Encabezados'
+      titleKey: 'general.info',
+      messageKey: 'messages.headers.missing',
+      messageParams: { missing: missingHeaders },
+      title: t('general.info', {}, lang),
+      suggestion: t('messages.headers.suggestion', {}, lang),
+      section: t('sections.encabezados', {}, lang),
+      suggestionKey: 'messages.headers.suggestion',
+      sectionKey: 'encabezados',
+      missingHeaders: missingHeaders
     });
   } else {
     // --- Orden de encabezados ---
-    // Calcula la posición de cada encabezado en el texto normalizado
-    const isOrderCorrect = headerPositions.every((pos, i, arr) => i === 0 || pos >= arr[i - 1]);
+    // Ordenar los encabezados por su posición en el documento
+    const sortedHeaders = [...headerPositions].sort((a, b) => a.position - b.position);
+    const isOrderCorrect = headerPositions.every((header, index) => {
+      if (index === 0) return true;
+      return header.position > headerPositions[index - 1].position;
+    });
 
     if (!isOrderCorrect) {
       results.push({
         type: 'info',
-        title: lang === 'en' ? 'Info' : 'Información',
-        message: config.messages.headerOrderWrong,
-        suggestion: config.messages.headerOrderWrongSuggestion,
-        section: lang === 'en' ? 'Headers' : 'Encabezados'
+        titleKey: 'general.info',
+        messageKey: 'messages.headers.wrongOrder',
+        title: t('general.info', {}, lang),
+        message: t('messages.headers.wrongOrder', {}, lang),
+        suggestion: t('messages.headers.orderSuggestion', {}, lang),
+        section: t('sections.encabezados', {}, lang),
+        sectionKey: 'encabezados',
+        expectedOrder: headerPositions.map(h => h.name).join(' → '),
+        actualOrder: sortedHeaders.map(h => h.name).join(' → ')
       });
     } else {
       results.push({
         type: 'info',
-        title: lang === 'en' ? 'Info' : 'Información',
-        message: config.messages.headerOrderCorrect,
-        suggestion: '',
-        section: lang === 'en' ? 'Headers' : 'Encabezados'
+        titleKey: 'general.info',
+        messageKey: 'messages.headers.correctOrder',
+        title: t('general.info', {}, lang),
+        message: t('messages.headers.correctOrder', {}, lang),
+        section: t('sections.encabezados', {}, lang),
+        sectionKey: 'encabezados',
+        order: headerPositions.map(h => h.name).join(' → ')
       });
     }
   }
 
-  // 5. Citas en el texto (APA: variantes)
+
+  // 6. Citas en el texto (APA: variantes)
   const citaRegex = /\(([A-ZÁÉÍÓÚÜÑ][a-zA-Záéíóúüñ]+(?:\s(?:y|&|et al\.)\s[A-ZÁÉÍÓÚÜÑ][a-zA-Záéíóúüñ]+)*(?:, [A-Z]\.)?(?:, [A-ZÁÉÍÓÚÜÑ][a-zA-Záéíóúüñ]+)*(?:; ?[A-ZÁÉÍÓÚÜÑ][a-zA-Záéíóúüñ]+(?:, [A-Z]\.)?,?)*), (\d{4})\)/g;
   const citationMatches = text.match(citaRegex);
   const numCitas = citationMatches ? citationMatches.length : 0;
-  if (!citationMatches || numCitas < 2) {
-    results.push({
-      type: 'suggestion',
-      title: lang === 'en' ? 'Suggestion' : 'Sugerencia',
-      message: config.messages.citationsFew,
-      suggestion: config.messages.citationsFewSuggestion,
-      section: lang === 'en' ? 'Citations' : 'Citas'
-    });
+
+  // Create formatted message based on count
+  let citationMessage, messageKey;
+  if (numCitas === 0) {
+    messageKey = 'messages.citations.count.none';
+    citationMessage = t(messageKey, {}, lang);
+  } else if (numCitas === 1) {
+    messageKey = 'messages.citations.count.one';
+    citationMessage = t(messageKey, {}, lang);
+  } else {
+    messageKey = 'messages.citations.count.many';
+    citationMessage = t(messageKey, { count: numCitas }, lang);
   }
+
+  // Add citation count to results
   results.push({
     type: 'info',
-    title: lang === 'en' ? 'Info' : 'Información',
-    message: config.messages.citationsCount(numCitas),
-    suggestion: '',
-    section: lang === 'en' ? 'Citations' : 'Citas'
+    titleKey: 'general.info',
+    messageKey: messageKey,
+    title: t('general.info', {}, lang),
+    message: citationMessage,
+    section: t('sections.citas', {}, lang),
+    sectionKey: 'citas',
+    count: numCitas
   });
 
-  // 6. Sugerencia general si no hay advertencias, errores ni sugerencias
+  if (numCitas < 2) {
+    results.push({
+      type: 'suggestion',
+      titleKey: 'general.suggestion',
+      messageKey: 'messages.citations.notEnough',
+      title: t('general.suggestion', {}, lang),
+      message: t('messages.citations.notEnough', {}, lang),
+      suggestion: t('messages.citations.suggestion', {}, lang),
+      section: t('sections.citas', {}, lang),
+      suggestionKey: 'messages.citations.suggestion',
+      sectionKey: 'citas'
+    });
+  }
+
+  // 7. Sugerencia general si no hay advertencias, errores ni sugerencias
   const onlyInfo = results.length > 0 && results.every(r => r.type === 'info');
   if (onlyInfo) {
     results.push({
       type: 'minor',
-      title: lang === 'en' ? 'Info' : 'Información',
-      message: config.messages.minor,
-      suggestion: config.messages.minorSuggestion,
-      section: lang === 'en' ? 'General' : 'General'
+      titleKey: 'general.info',
+      messageKey: 'messages.feedback.minorReview',
+      title: t('general.info', {}, lang),
+      message: t('messages.feedback.minorReview', {}, lang),
+      suggestion: t('messages.feedback.generalSuggestion', {}, lang),
+      section: t('sections.general', {}, lang),
+      suggestionKey: 'messages.feedback.generalSuggestion',
+      sectionKey: 'general'
     });
   } else if (results.length === 0) {
     results.push({
       type: 'success',
-      title: lang === 'en' ? 'Success' : 'Éxito',
-      message: config.messages.success,
-      suggestion: '',
-      section: lang === 'en' ? 'General' : 'General'
+      titleKey: 'general.success',
+      messageKey: 'messages.feedback.validationSuccess',
+      title: t('general.success', {}, lang),
+      message: t('messages.feedback.validationSuccess', {}, lang),
+      section: t('sections.general', {}, lang),
+      sectionKey: 'general'
     });
   }
 
@@ -809,5 +1012,52 @@ detected.universidad = universidadCandidates.length > 0 ? universidadCandidates[
     sectionChartData.push({ section, count });
   }
 
-  return { results, pieChartData, sectionChartData };
+  // --- Calificación general (score) ---
+  const score = calculateApaScore(results, lang);
+
+  return { results, pieChartData, sectionChartData, score };
+}
+
+// --- Score utilitario reutilizable ---
+export function calculateApaScore(results, lang = 'es') {
+  const scoreWeights = {
+    error: -3,
+    warning: -2,
+    suggestion: -1,
+    minor: 0,
+    info: 0,
+    success: 1
+  };
+  let rawScore = 0;
+  let total = 0;
+  let minScore = 0;
+  let maxScore = 0;
+  results.forEach(r => {
+    const w = scoreWeights[r.type] ?? 0;
+    rawScore += w;
+    total++;
+  });
+  if (total > 0) {
+    minScore = total * Math.min(...Object.values(scoreWeights));
+    maxScore = total * Math.max(...Object.values(scoreWeights));
+  } else {
+    minScore = 0;
+    maxScore = 1;
+  }
+  let normalizedScore = 0;
+  if (maxScore !== minScore) {
+    normalizedScore = Math.round(((rawScore - minScore) / (maxScore - minScore)) * 100);
+  }
+  let qualitative = '';
+  if (normalizedScore >= 90) qualitative = 'excellent';
+  else if (normalizedScore >= 75) qualitative = 'good';
+  else if (normalizedScore >= 60) qualitative = 'acceptable';
+  else if (normalizedScore >= 40) qualitative = 'poor';
+  else qualitative = 'very_poor';
+  return { value: normalizedScore, qualitative };
+}
+
+// Función auxiliar para escapar caracteres especiales en expresiones regulares
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

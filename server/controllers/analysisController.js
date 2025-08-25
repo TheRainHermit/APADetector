@@ -1,8 +1,9 @@
-import { analyzeFile } from '../services/apaService.js';
+import { analyzeFile, calculateApaScore, t } from '../services/apaService.js';
 import pool from '../models/db.js';
 import { unlinkSync } from 'fs';
 import multer from 'multer';
 import { errorResponse } from '../utils/errors.js';
+import i18n from '../../client/src/i18n/index.js'; // Asegúrate de que este archivo exista
 
 // Analizar documento
 
@@ -23,45 +24,132 @@ export async function analyzeDocument(req, res) {
     const documentId = docResult.insertId;
 
     // 2. Analizar archivo (ahora retorna { results, pieChartData, sectionChartData })
-    const analysis = await analyzeFile(req.file.path, req.file.mimetype);
+    const lang = req.body?.lang || req.query?.lang || 'es';
+    //console.log('LANG PARAM RECEIVED:', lang);
+    const analysis = await analyzeFile(req.file.path, req.file.mimetype, lang);
     //console.log('ANALYSIS:', analysis);
 
     if (!analysis || !Array.isArray(analysis.results)) {
       return errorResponse(res, 500, 'Error interno: análisis inválido');
     }
 
-    // 3. Guardar resultados
-    const insertPromises = analysis.results.map(result =>
-      pool.query(
-        `INSERT INTO analysis_results (document_id, type, title, message, suggestion, section)
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        [
-          documentId,
-          result.type,
-          result.title,
-          result.message,
-          result.suggestion || null,
-          result.section || null
-        ]
-      )
-    );
-    await Promise.all(insertPromises);
+    // 3. Asegurar que todos los resultados tengan los campos requeridos
+    const safeResults = analysis.results.map(result => {
+      // Mapear tipos a severidades compatibles con Material-UI
+      const typeMap = {
+        'error': 'error',
+        'warning': 'warning',
+        'suggestion': 'info',
+        'info': 'info',
+        'success': 'success'
+      };
+
+      const severity = typeMap[result.type] || 'info';
+      const defaultTitle = severity.charAt(0).toUpperCase() + severity.slice(1);
+
+      return {
+        type: severity,
+
+        title: result.title || defaultTitle,
+        message: (() => {
+          if (result.messageKey) {
+            const msg = t(
+              result.messageKey,
+              result.messageParams ? (typeof result.messageParams === 'string' ? JSON.parse(result.messageParams) : result.messageParams) : {},
+              lang
+            );
+            return typeof msg === 'function' ? msg(result.messageParams || {}) : msg;
+          }
+          if (typeof result.message === 'function') {
+            return result.message(result.messageParams || {});
+          }
+          if (typeof result.message === 'object') {
+            return JSON.stringify(result.message);
+          }
+          if (result.message && typeof result.message === 'string' && result.message !== 'Se ha completado el análisis del documento') {
+            return result.message;
+          }
+          if (result.messageKey) {
+            const msg = t(
+              result.messageKey,
+              result.messageParams ? (typeof result.messageParams === 'string' ? JSON.parse(result.messageParams) : result.messageParams) : {},
+              lang
+            );
+            return typeof msg === 'function' ? msg(result.messageParams || {}) : msg;
+          }
+          return '';
+        })(),
+        suggestion: result.suggestion || null,
+
+        section: result.section || 'general',
+        count: result.count || null,
+        // Mantener las claves originales para referencia
+        ...(result.titleKey && { titleKey: result.titleKey }),
+        ...(result.messageKey && { messageKey: result.messageKey }),
+        ...(result.suggestionKey && { suggestionKey: result.suggestionKey }),
+        ...(result.sectionKey && { sectionKey: result.sectionKey }),
+        ...(result.messageParams && { messageParams: result.messageParams })
+      };
+    });
+
+    // 4. Guardar resultados en la base de datos
+    const insertPromises = safeResults.map(result => {
+      const insertParams = [
+        documentId,
+        result.type,
+        result.title,
+        typeof result.message === 'object' ? JSON.stringify(result.message) : result.message,
+        result.suggestion,
+        result.section,
+        result.count || null,
+        result.titleKey || null,
+        result.messageKey || null,
+        result.suggestionKey || null,
+        result.sectionKey || null,
+        result.messageParams ? JSON.stringify(result.messageParams) : null
+      ];
+      console.log('Insert params:', insertParams, 'Types:', insertParams.map(v => typeof v));
+      return pool.query(
+        `INSERT INTO analysis_results (document_id, type, title, message, suggestion, section, count, titleKey, messageKey, suggestionKey, sectionKey, messageParams)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        insertParams
+      );
+    });
+
+    try {
+      await Promise.all(insertPromises);
+    } catch (dbError) {
+      console.error('Error al guardar los resultados en la base de datos:', dbError);
+      // Continuamos a pesar del error para no interrumpir el flujo
+    }
 
     // 4. Eliminar archivo temporal
     unlinkSync(req.file.path);
 
-    // 5. Responder con resultados, gráficas e info del documento
-    res.json({
+    // 5. Asegurar que siempre haya datos para el frontend
+    const responseData = {
       documentId,
-      results: analysis.results,
-      pieChartData: analysis.pieChartData,
-      sectionChartData: analysis.sectionChartData,
+      results: safeResults.length > 0 ? safeResults : [{
+        type: 'info',
+        title: 'Análisis completado',
+        message: 'El documento ha sido analizado correctamente',
+        section: 'general'
+      }],
+      pieChartData: analysis.pieChartData || [
+        { name: 'info', value: 1 }
+      ],
+      sectionChartData: analysis.sectionChartData || [
+        { section: 'general', count: 1 }
+      ],
       docInfo: {
         originalname: req.file.originalname,
         mimetype: req.file.mimetype,
         size: req.file.size
       }
-    });
+    };
+
+    console.log('Enviando respuesta al frontend con', responseData.results.length, 'resultados');
+    res.json(responseData);
 
   } catch (error) {
     if (error instanceof multer.MulterError) {
@@ -135,8 +223,8 @@ export async function getAllDocuments(req, res) {
     return errorResponse(res, 500, 'Error al obtener el historial de documentos.');
   }
 }
-  
-  // Obtener resultados de un documento específico
+
+// Obtener resultados de un documento específico
 export async function getAnalysisResults(req, res) {
   const { id } = req.params;
   try {
@@ -152,6 +240,8 @@ export async function getAnalysisResults(req, res) {
     const [results] = await pool.query(
       `SELECT * FROM analysis_results WHERE document_id = ? ORDER BY created_at ASC`, [id]
     );
+
+    console.log('Results:', results);
 
     // --- Calcula los datos para las gráficas ---
     const typeCount = {};
@@ -172,12 +262,39 @@ export async function getAnalysisResults(req, res) {
       });
     }
 
+    // --- Determina el idioma solicitado ---
+    const lang = req.query.lang || docs[0]?.lang || 'es';
+
+    // --- Retraduce los resultados usando las keys guardadas ---
+    const translatedResults = results.map(r => ({
+      ...r,
+      title: r.titleKey ? t(r.titleKey, {}, lang) : r.title,
+      message: r.messageKey ? t(
+        r.messageKey,
+        r.messageParams ? (typeof r.messageParams === 'string' ? JSON.parse(r.messageParams) : r.messageParams) : {},
+        lang
+      ) : r.message,
+      suggestion: r.suggestionKey ? t(
+        r.suggestionKey,
+        r.suggestionParams ? (typeof r.suggestionParams === 'string' ? JSON.parse(r.suggestionParams) : r.suggestionParams) : {},
+        lang
+      ) : r.suggestion,
+      section: r.sectionKey ? t('sections.' + r.sectionKey, {}, lang) : r.section,
+      ...(r.messageParams && { messageParams: typeof r.messageParams === 'string' ? JSON.parse(r.messageParams) : r.messageParams })
+    }));
+
+    console.log('Translated results:', translatedResults);
+
+    // --- Calcula el score general APA usando función utilitaria ---
+    const score = calculateApaScore(translatedResults, lang);
+
     // --- Responde con todo lo necesario ---
     res.json({
       document: docs[0],
-      results,
+      results: translatedResults,
       pieChartData,
       sectionChartData,
+      score,
       docInfo: {
         originalname: docs[0].originalname,
         mimetype: docs[0].mimetype,

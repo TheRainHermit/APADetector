@@ -1,27 +1,59 @@
-import { useLanguage } from '../context/LanguageContext';
+import { useContext, useMemo } from 'react';
 import I18N from './index';
+import LanguageContext from '../context/LanguageContext.jsx';
 
-// Interpolación simple: t('greeting', { name: 'Juan' }) => "Hola Juan"
-function interpolate(str, vars = {}) {
-  return str.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');
-}
-
-// Permite acceder a claves anidadas tipo 'footer.title'
-function getNested(obj, path) {
+// Helper function to get nested object properties using dot notation
+const getNestedValue = (obj, path) => {
     return path.split('.').reduce((o, k) => (o || {})[k], obj);
-}
+};
 
-export default function useT() {
-  const { lang } = useLanguage();
-  /**
-   * @param {string} key - clave del texto
-   * @param {object} [vars] - variables para interpolar
-   * @returns {string}
-   */
-  const t = (key, vars) => {
-    let text = getNested(I18N[lang], key) || getNested(I18N['es'], key);
-    if (typeof text !== 'string') text = key;
-    return vars ? interpolate(text, vars) : text;
-  };
-  return t;
-}
+// Helper function for string interpolation
+export const interpolate = (str, vars = {}) => {
+    if (!str || typeof str !== 'string') return str;
+    return str.replace(/\{([^}]+)\}/g, (match, key) => vars[key.trim()] || match);
+};
+
+const useT = () => {
+    const { language } = useContext(LanguageContext);
+    
+    // Memoize the translation function to prevent unnecessary re-renders
+    const t = useMemo(() => {
+        return (key, vars) => {
+            if (!key) return '';
+            
+            // Get the translation for the current language
+            let translation = getNestedValue(I18N[language] || {}, key);
+            
+            // Fallback to Spanish if translation is missing and not already in Spanish
+            if (translation === undefined && language !== 'es') {
+                translation = getNestedValue(I18N.es || {}, key);
+            }
+            
+            // If still no translation found, return the key in development for easier debugging
+            if (translation === undefined) {
+                if (process.env.NODE_ENV === 'development') {
+                    console.warn(`[i18n] Missing translation for key: ${key}`);
+                }
+                return key;
+            }
+            
+            // Handle array translations (for lists, paragraphs, etc.)
+            if (Array.isArray(translation)) {
+                return translation.map(item => 
+                    typeof item === 'string' ? interpolate(item, vars) : item
+                );
+            }
+            
+            // Handle string interpolation
+            if (typeof translation === 'string' && vars) {
+                return interpolate(translation, vars);
+            }
+            
+            return translation;
+        };
+    }, [language]);
+    
+    return t;
+};
+
+export default useT;

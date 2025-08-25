@@ -5,7 +5,7 @@ import { Button, Typography, Card, CardContent, CircularProgress, Snackbar, Aler
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { uploadAndAnalyze } from '../../services/api';
 import FilePreview from '../../pages/FilePreview';
-import { useLanguage, LANG_OPTIONS } from '../../context/LanguageContext';
+import { useLanguage } from '../../context/LanguageContext';
 import useT from '../../i18n/useT';
 import useApiError from '../../hooks/useApiError';
 
@@ -89,22 +89,10 @@ const Analyze = () => {
   };
 
   return (
-    <div>
+    <Box maxWidth="900px" mx="auto" my={0}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Analizar Documento
+        {t('analyzeTitle')}
       </Typography>
-
-      {/* Selector de idioma global */}
-      <div style={{ margin: '16px 0' }}>
-        <label>
-          Idioma del análisis:&nbsp;
-          <select value={lang} onChange={handleLangChange}>
-            {LANG_OPTIONS.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
-        </label>
-      </div>
 
       <Card>
         <CardContent>
@@ -117,8 +105,8 @@ const Analyze = () => {
           }}>
             <input {...getInputProps()} />
             {isDragActive
-              ? <p>Suelta el archivo aquí...</p>
-              : <p>Arrastra y suelta un archivo aquí, o haz clic para seleccionar uno.</p>
+              ? <p>{t('dropActive')}</p>
+              : <p>{t('dropHere')}</p>
             }
           </div>
 
@@ -132,9 +120,20 @@ const Analyze = () => {
             startIcon={<CloudUploadIcon />}
             onClick={handleAnalyze}
             disabled={loading || !file}
+            sx={{ mt: 2 }}
           >
             {loading ? <CircularProgress size={24} color="inherit" /> : t('analyze')}
           </Button>
+          
+          <Box mt={2}>
+            <Typography variant="body2" color="text.secondary">
+              {t('allowedTypes')}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {t('maxSize')}
+            </Typography>
+          </Box>
+          
           {error && (
             <MuiAlert severity="error" sx={{ mt: 2 }}>
               {getApiErrorMessage(error)} 
@@ -153,7 +152,7 @@ const Analyze = () => {
           {getApiErrorMessage(error)}
         </MuiAlert>
       </Snackbar>
-    </div>
+    </Box>
   );
 };
 

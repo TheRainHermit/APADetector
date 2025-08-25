@@ -10,6 +10,10 @@ import About from './pages/About/About';
 import Contact from './pages/Contact/Contact';
 import NotFound from './pages/NotFound/NotFound';
 import Documents from './pages/Documents';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfUse from './pages/TermsOfUse';
+import { LanguageProvider } from './context/LanguageContext';
+
 import './App.css';
 
 // Personalización del tema
@@ -252,27 +256,31 @@ Object.assign(document.body.style, GlobalStyles);
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <div className="app-container">
-        <Router>
-          <Navbar />
-          <main className="main-content">
-            <Routes>
-            <Route path="/" element={<Home />} />
-              <Route path="/analyze" element={<Analyze />} />
-              <Route path="/results/:id" element={<Results />} />
-              <Route path="/documents" element={<Documents />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/404" element={<NotFound />} />
-              <Route path="*" element={<Navigate to="/404" replace />} />
-            </Routes>
-          </main>
-          <Footer />
-        </Router>
-      </div>
-    </ThemeProvider>
+    <LanguageProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <div className="app-container">
+          <Router>
+            <Navbar />
+            <main className="main-content">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/analyze" element={<Analyze />} />
+                <Route path="/results/:id" element={<Results />} />
+                <Route path="/documents" element={<Documents />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsOfUse />} />
+                <Route path="/404" element={<NotFound />} />
+                <Route path="*" element={<Navigate to="/404" replace />} />
+              </Routes>
+            </main>
+            <Footer />
+          </Router>
+        </div>
+      </ThemeProvider>
+    </LanguageProvider>
   );
 }
 

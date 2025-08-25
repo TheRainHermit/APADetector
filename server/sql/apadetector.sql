@@ -37,3 +37,14 @@ CREATE TABLE IF NOT EXISTS error_logs (
 );
 
 ALTER TABLE analysis_results ADD COLUMN section VARCHAR(255) DEFAULT NULL;
+
+-- Add count column to analysis_results
+ALTER TABLE analysis_results ADD COLUMN count INT DEFAULT NULL;
+
+ALTER TABLE analysis_results
+  ADD COLUMN titleKey VARCHAR(128),
+  ADD COLUMN messageKey VARCHAR(128),
+  ADD COLUMN suggestionKey VARCHAR(128),
+  ADD COLUMN sectionKey VARCHAR(64);
+
+ALTER TABLE analysis_results ADD COLUMN messageParams TEXT;

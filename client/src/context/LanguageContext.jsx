@@ -1,30 +1,41 @@
-import React, { createContext, useContext, useState } from 'react';
+// src/context/LanguageContext.js
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const LanguageContext = createContext();
 
-export const LANG_OPTIONS = [
-  { value: 'es', label: 'Español' },
-  { value: 'en', label: 'English' },
-  // ...otros idiomas
-];
+export const LanguageProvider = ({ children }) => {
+    const [language, setLanguage] = useState('es');
 
-export function LanguageProvider({ children }) {
-  // Inicializa con el idioma guardado en localStorage o 'es'
-  const [lang, setLang] = useState(() => localStorage.getItem('lang') || 'es');
+    // Load language preference from localStorage on initial render
+    useEffect(() => {
+        const savedLanguage = localStorage.getItem('preferredLanguage');
+        if (savedLanguage) {
+            setLanguage(savedLanguage);
+        } else {
+            // Default to browser language if available, otherwise use Spanish
+            const browserLang = navigator.language.split('-')[0];
+            setLanguage(['es', 'en'].includes(browserLang) ? browserLang : 'es');
+        }
+    }, []);
 
-  const changeLang = (newLang) => {
-    setLang(newLang);
-    localStorage.setItem('lang', newLang);
-  };
+    const changeLanguage = (lang) => {
+        setLanguage(lang);
+        localStorage.setItem('preferredLanguage', lang);
+    };
 
-  return (
-    <LanguageContext.Provider value={{ lang, changeLang }}>
-      {children}
-    </LanguageContext.Provider>
-  );
-}
+    return (
+        <LanguageContext.Provider value={{ language, changeLanguage }}>
+            {children}
+        </LanguageContext.Provider>
+    );
+};
 
-// Hook para usar el contexto fácilmente
-export function useLanguage() {
-  return useContext(LanguageContext);
-}
+export const useLanguage = () => {
+    const context = useContext(LanguageContext);
+    if (!context) {
+        throw new Error('useLanguage must be used within a LanguageProvider');
+    }
+    return context;
+};
+
+export default LanguageContext;

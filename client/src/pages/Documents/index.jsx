@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchAllDocuments } from '../../services/api';
-import { useLanguage, LANG_OPTIONS } from '../../context/LanguageContext';
+import { useLanguage } from '../../context/LanguageContext';
 import useT from '../../i18n/useT';
 import useApiError from '../../hooks/useApiError';
 import {

@@ -11,17 +11,19 @@ import {
     ListItem,
     ListItemText,
     useMediaQuery,
-    useTheme
+    useTheme,
+    Box,
+    Divider
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import DescriptionIcon from '@mui/icons-material/Description';
 import CloseIcon from '@mui/icons-material/Close';
-import Box from '@mui/material/Box';
+import LanguageIcon from '@mui/icons-material/Language';
 import './Navbar.css';
 import useT from '../../i18n/useT';
+import LanguageSelector from '../LanguageSelector';
 
 const Navbar = () => {
-    const [mobileOpen, setMobileOpen] = React.useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const t = useT();
@@ -31,14 +33,31 @@ const Navbar = () => {
     };
 
     const menuItems = [
-        { text: t('home'), path: '/' },
-        { text: t('analyze'), path: '/analyze' },
-        { text: t('about'), path: '/about' },
-        { text: t('contact'), path: '/contact' },
+        { text: 'home', path: '/' },
+        { text: 'analyze', path: '/analyze' },
+        { text: 'about', path: '/about' },
+        { text: 'contact', path: '/contact' },
     ];
 
     const drawer = (
-        <div>
+        <Box 
+            sx={{ width: 250 }} 
+            role="presentation" 
+            onClick={(e) => e.stopPropagation()}
+        >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2 }}>
+                <Typography variant="h6" component="div">
+                    {t('menu')}
+                </Typography>
+                <IconButton 
+                    onClick={handleDrawerToggle}
+                    aria-label={t('closeMenu')}
+                    edge="end"
+                >
+                    <CloseIcon />
+                </IconButton>
+            </Box>
+            <Divider />
             <List>
                 {menuItems.map((item) => (
                     <ListItem
@@ -48,17 +67,30 @@ const Navbar = () => {
                         to={item.path}
                         onClick={handleDrawerToggle}
                     >
-                        <ListItemText primary={item.text} />
+                        <ListItemText primary={t(item.text)} />
                     </ListItem>
                 ))}
+                <Divider sx={{ my: 1 }} />
+                <ListItem>
+                    <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <LanguageIcon color="action" />
+                        <LanguageSelector fullWidth />
+                    </Box>
+                </ListItem>
             </List>
-        </div>
+        </Box>
     );
 
     return (
         <AppBar position="sticky" elevation={1} color="default">
             <Toolbar>
-                <img src="/APAicon.png" alt="APA icono" width={40} height={40}/>
+                <img 
+                    src="/APAicon.png" 
+                    alt={t('appTitle')} 
+                    width={40} 
+                    height={40}
+                    style={{ marginRight: '10px' }}
+                />
                 <Typography
                     variant="h6"
                     component={Link}
@@ -76,36 +108,44 @@ const Navbar = () => {
                     {t('appTitle')}
                 </Typography>
 
-                {isMobile ? (
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                ) : (
-                    <Box>
-                        {menuItems.map((item) => (
-                            <Button
-                                key={item.text}
-                                color="inherit"
-                                component={Link}
-                                to={item.path}
-                                sx={{
-                                    mx: 1,
-                                    '&:hover': {
-                                        color: 'primary.main',
-                                        backgroundColor: 'rgba(25, 118, 210, 0.04)'
-                                    }
-                                }}
-                            >
-                                {t(item.text)}
-                            </Button>
-                        ))}
-                    </Box>
-                )}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    {!isMobile && (
+                        <>
+                            <Box sx={{ display: 'flex', gap: 1 }}>
+                                {menuItems.map((item) => (
+                                    <Button
+                                        key={item.text}
+                                        color="inherit"
+                                        component={Link}
+                                        to={item.path}
+                                        sx={{
+                                            textTransform: 'none',
+                                            '&:hover': {
+                                                color: 'primary.main',
+                                                backgroundColor: 'rgba(25, 118, 210, 0.04)'
+                                            }
+                                        }}
+                                    >
+                                        {t(item.text)}
+                                    </Button>
+                                ))}
+                            </Box>
+                            <Box sx={{ ml: 1 }}>
+                                <LanguageSelector />
+                            </Box>
+                        </>
+                    )}
+                    {isMobile && (
+                        <IconButton
+                            color="inherit"
+                            aria-label={mobileOpen ? t('closeMenu') : t('openMenu')}
+                            edge="end"
+                            onClick={handleDrawerToggle}
+                        >
+                            {mobileOpen ? <CloseIcon /> : <MenuIcon />}
+                        </IconButton>
+                    )}
+                </Box>
             </Toolbar>
 
             <Drawer
@@ -114,12 +154,12 @@ const Navbar = () => {
                 open={mobileOpen}
                 onClose={handleDrawerToggle}
                 ModalProps={{
-                    keepMounted: true, // Better open performance on mobile.
+                    keepMounted: true, // Better open performance on mobile
                 }}
                 sx={{
                     '& .MuiDrawer-paper': {
                         boxSizing: 'border-box',
-                        width: 240,
+                        width: 280,
                     },
                 }}
             >
@@ -128,6 +168,5 @@ const Navbar = () => {
         </AppBar>
     );
 };
-
 
 export default Navbar;
