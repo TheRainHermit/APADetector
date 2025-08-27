@@ -1,19 +1,12 @@
 {
   "name": "apadetector-server",
   "version": "1.0.0",
-  "description": "Backend para APADetector (análisis de normas APA)",
+  "description": "Backend para APA Detector (análisis de normas APA)",
   "main": "server.js",
   "type": "module",
   "scripts": {
     "start": "node --experimental-modules server.js",
-    "dev": "nodemon --experimental-modules server.js",
-    "production": "pm2 start ecosystem.config.js --env production",
-    "development": "pm2 start ecosystem.config.js --env development",
-    "stop:prod": "pm2 stop apadetector-server",
-    "restart:prod": "pm2 restart apadetector-server",
-    "delete:prod": "pm2 delete apadetector-server",
-    "monitor": "pm2 monit",
-    "logs": "pm2 logs apadetector-server"
+    "dev": "nodemon --experimental-modules server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
