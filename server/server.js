@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 4000;
 // Configuración de CORS
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://apadetector.vercel.app',
+  'https://apa-detector.vercel.app',
   'http://127.0.0.1:3000',
   'http://localhost:5173',
 ];
@@ -69,10 +69,10 @@ app.use((err, req, res, next) => {
 });
 
 // Inicio del servidor
-const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Servidor APA Detector backend corriendo en puerto ${PORT}`);
-  console.log(`Modo: ${process.env.NODE_ENV || 'development'}`);
-});
+// const server = app.listen(PORT, '0.0.0.0', () => {
+//   console.log(`Servidor APA Detector backend corriendo en puerto ${PORT}`);
+//   console.log(`Modo: ${process.env.NODE_ENV || 'development'}`);
+// });
 
 // Manejo de errores de conexión
 server.on('error', (error) => {
