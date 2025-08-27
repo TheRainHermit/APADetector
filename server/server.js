@@ -74,14 +74,14 @@ app.use((err, req, res, next) => {
 //   console.log(`Modo: ${process.env.NODE_ENV || 'development'}`);
 // });
 
-// Manejo de errores de conexión
-server.on('error', (error) => {
-  if (error.code === 'EADDRINUSE') {
-    console.error(`El puerto ${PORT} ya está en uso.`);
-  } else {
-    console.error('Error al iniciar el servidor:', error);
-  }
-  process.exit(1);
-});
+// // Manejo de errores de conexión
+// server.on('error', (error) => {
+//   if (error.code === 'EADDRINUSE') {
+//     console.error(`El puerto ${PORT} ya está en uso.`);
+//   } else {
+//     console.error('Error al iniciar el servidor:', error);
+//   }
+//   process.exit(1);
+// });
 
 export default app;
