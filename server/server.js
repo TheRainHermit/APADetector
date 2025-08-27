@@ -68,6 +68,8 @@ app.use((err, req, res, next) => {
   return errorResponse(res, 'INTERNAL_SERVER_ERROR', 'Error interno del servidor.', {}, 500);
 });
 
+app.get('/api/ping', (req, res) => res.json({ ok: true }));
+
 // Inicio del servidor
 // const server = app.listen(PORT, '0.0.0.0', () => {
 //   console.log(`Servidor APA Detector backend corriendo en puerto ${PORT}`);
