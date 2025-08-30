@@ -1,4 +1,4 @@
 // api/hello.js
-export default (req, res) => {
+module.exports = (req, res) => {
     res.json({ msg: "Hello from root API!" });
-};
+  };
