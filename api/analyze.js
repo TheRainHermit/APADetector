@@ -30,6 +30,8 @@ export default async function handler(req, res) {
     let mimeType = null;
 
     busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+      // LOG para depuración
+      console.log('filename:', filename, 'typeof:', typeof filename);
       fileName = filename;
       mimeType = mimetype;
       const chunks = [];
@@ -38,14 +40,16 @@ export default async function handler(req, res) {
         fileBuffer = Buffer.concat(chunks);
       });
     });
-
+    
     busboy.on('finish', async () => {
-      if (!fileBuffer || !fileName) {
-        return res.status(400).json({ error: 'No se recibió archivo' });
+      // Nueva validación robusta
+      if (!fileBuffer || !fileName || typeof fileName !== 'string') {
+        console.error('fileBuffer:', fileBuffer, 'fileName:', fileName, 'typeof:', typeof fileName);
+        return res.status(400).json({ error: 'No se recibió archivo válido', fileName, fileBufferType: typeof fileBuffer });
       }
       const tempPath = path.join('/tmp', fileName);
       await writeFile(tempPath, fileBuffer);
-
+    
       try {
         const resultado = await analyzeFile(tempPath, mimeType, 'es');
         return res.status(200).json({ ok: true, resultado });
