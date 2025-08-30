@@ -76,7 +76,7 @@ export default function Results() {
         if (data && data.results && Array.isArray(data.results) && data.results.length > 0) {
           setProcessing(false);
           setPollCount(0);
-          setDocInfo(data.docInfo);
+          setDocInfo(data.document);
           setResults(data.results);
           setPieChartData(Array.isArray(data.pieChartData) ? data.pieChartData : []);
           setSectionChartData(Array.isArray(data.sectionChartData) ? data.sectionChartData : []);
