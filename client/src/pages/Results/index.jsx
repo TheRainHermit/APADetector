@@ -113,7 +113,9 @@ export default function Results() {
   const handleExportExcel = () => {
     const ws = XLSX.utils.json_to_sheet(results);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, String(t('results') || 'Resultados'));
+    // Limpia el nombre de la hoja para Excel (sin caracteres prohibidos)
+    let safeSheetName = String(t('results') || 'Resultados').replace(/[:\\/?*\[\]]/g, '');
+    XLSX.utils.book_append_sheet(wb, ws, safeSheetName);
     XLSX.writeFile(wb, `apa-results-${new Date().toISOString().split('T')[0]}.xlsx`);
   };
 
@@ -320,7 +322,7 @@ export default function Results() {
             >
               <PieChart width={350} height={250}>
                 <Pie
-                  data={pieChartData}
+                  data={pieChartData.map(d => ({ ...d, name: t(d.name) || d.name }))}
                   dataKey="value"
                   nameKey="name"
                   cx="50%"
@@ -332,8 +334,8 @@ export default function Results() {
                     <Cell key={`cell-${idx}`} fill={COLORS[idx % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
-                <Legend />
+                <Tooltip formatter={(value, name) => [value, t(name) || name]} />
+                <Legend formatter={value => t(value) || value} />
               </PieChart>
               <Typography
                 variant="body2"
@@ -360,11 +362,11 @@ export default function Results() {
                 tabIndex={0}
                 style={{ outline: 'none' }}
               >
-                <BarChart width={350} height={250} data={sectionChartData}>
+                <BarChart width={350} height={250} data={sectionChartData.map(d => ({ ...d, section: t(`sections.${String(d.section).toLowerCase()}`) || d.section }))}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="section" angle={-12} textAnchor="end" interval={0} />
                   <YAxis allowDecimals={false} />
-                  <Tooltip />
+                  <Tooltip formatter={(value, name) => [value, t(`sections.${name.toLowerCase()}`) || name]} />
                   <Bar dataKey="count" fill="#686de0" />
                 </BarChart>
                 {/* Descripción solo para lectores de pantalla */}

@@ -36,9 +36,36 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: docError.message });
   }
 
+  // --- Generar pieChartData (por tipo) ---
+  const pieChartData = [];
+  if (Array.isArray(results)) {
+    const typeCount = {};
+    results.forEach(r => {
+      typeCount[r.type] = (typeCount[r.type] || 0) + 1;
+    });
+    for (const [type, count] of Object.entries(typeCount)) {
+      pieChartData.push({ name: type, value: count });
+    }
+  }
+
+  // --- Generar sectionChartData (por sección) ---
+  const sectionChartData = [];
+  if (Array.isArray(results)) {
+    const sectionCount = {};
+    results.forEach(r => {
+      const section = r.section || 'General';
+      sectionCount[section] = (sectionCount[section] || 0) + 1;
+    });
+    for (const [section, count] of Object.entries(sectionCount)) {
+      sectionChartData.push({ section, count });
+    }
+  }
+
   return res.status(200).json({
     ok: true,
     document,
     results,
+    pieChartData,
+    sectionChartData
   });
 }
