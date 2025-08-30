@@ -5,6 +5,7 @@
     "type": "module",
     "scripts": {},
     "dependencies": {
+        "busboy": "^1.6.0",
         "cors": "^2.8.5",
         "express": "^4.21.2",
         "mammoth": "^1.9.1",
