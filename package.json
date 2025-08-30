@@ -3,7 +3,12 @@
     "version": "1.0.0",
     "private": true,
     "type": "module",
-    "scripts": {},
+    "scripts": {
+        "postinstall": "patch-package"
+    },
+    "config": {
+        "patchPackageDir": "server/patches"
+    },
     "dependencies": {
         "busboy": "^1.6.0",
         "cors": "^2.8.5",
