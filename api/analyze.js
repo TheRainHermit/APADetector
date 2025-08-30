@@ -39,27 +39,27 @@ export default async function handler(req, res) {
       });
     });
 
-    busboy.end(rawBody);
+    busboy.on('finish', async () => {
+      if (!fileBuffer || !fileName) {
+        return res.status(400).json({ error: 'No se recibió archivo' });
+      }
+      const tempPath = path.join('/tmp', fileName);
+      await writeFile(tempPath, fileBuffer);
 
-    await new Promise((resolve, reject) => {
-      busboy.on('finish', resolve);
-      busboy.on('error', reject);
+      try {
+        const resultado = await analyzeFile(tempPath, mimeType, 'es');
+        return res.status(200).json({ ok: true, resultado });
+      } catch (error) {
+        return res.status(500).json({ ok: false, error: error.message });
+      }
     });
 
-    if (!fileBuffer) {
-      return res.status(400).json({ error: 'No se recibió archivo' });
-    }
+    busboy.on('error', (err) => {
+      return res.status(500).json({ ok: false, error: err.message });
+    });
 
-    const tempPath = path.join('/tmp', fileName);
-    await writeFile(tempPath, fileBuffer);
-
-    // AQUÍ INTEGRAS TU SERVICIO DE ANÁLISIS
-    try {
-      const resultado = await analyzeFile(tempPath, mimeType, 'es'); // O 'en' según idioma
-      return res.status(200).json({ ok: true, resultado });
-    } catch (error) {
-      return res.status(500).json({ ok: false, error: error.message });
-    }
+    busboy.end(rawBody);
+    return;
   }
 
   res.status(405).json({ error: 'Método no permitido' });
