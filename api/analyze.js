@@ -119,7 +119,7 @@ export default async function handler(req, res) {
         }
 
         // 4. Responder con el ID y el análisis
-        return res.status(200).json({ ok: true, id: documentId, resultado: analysis });
+        return res.status(200).json({ ok: true, documentId: documentId, resultado: analysis });
       } catch (error) {
         console.error('Unexpected error in analyze handler:', error);
         return res.status(500).json({ ok: false, error: error.message });
