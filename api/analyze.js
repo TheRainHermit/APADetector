@@ -1,13 +1,19 @@
-import express from 'express';
+
 //import upload from '../server/middlewares/uploadMiddleware.js';
 //import { analyzeDocument, getAllDocuments, getAnalysisResults } from '../server/controllers/analysisController.js';
+import express from 'express';
+import { createServer } from 'http';
+import { parse } from 'url';
 
 const app = express();
 
 app.get('/', (req, res) => {
-    res.json({ ok: true, info: 'API analyze GET works' });
-  });
-  export default app;
+  res.json({ ok: true, info: 'API analyze GET works' });
+});
+
+export default function handler(req, res) {
+  app(req, res);
+}
 
 // app.use((req, res, next) => {
 //     console.log('--- Nueva petición recibida ---');
