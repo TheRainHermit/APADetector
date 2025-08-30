@@ -30,9 +30,12 @@ export default async function handler(req, res) {
     let mimeType = null;
 
     busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-      // LOG para depuración
-      console.log('filename:', filename, 'typeof:', typeof filename);
-      fileName = filename;
+      // Si filename es objeto, extrae el string
+      let realFileName = filename;
+      if (filename && typeof filename === 'object' && filename.filename) {
+        realFileName = filename.filename;
+      }
+      fileName = realFileName;
       mimeType = mimetype;
       const chunks = [];
       file.on('data', (data) => chunks.push(data));
