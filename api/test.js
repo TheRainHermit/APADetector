@@ -1,11 +1,10 @@
-import express from 'express';
-
-const app = express();
-
-app.get('/', (req, res) => {
-  res.json({ ok: true, info: 'Express basic handler works' });
-});
-
+// api/analyze.js
 export default function handler(req, res) {
-  app(req, res);
+  if (req.method === 'GET') {
+    res.json({ ok: true, info: 'API analyze GET works' });
+  } else if (req.method === 'POST') {
+    // lógica para analizar documento
+  } else {
+    res.status(405).end();
+  }
 }
