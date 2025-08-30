@@ -1,4 +1,11 @@
 import express from 'express';
+
+const app = express();
+
+app.get('/', (req, res) => {
+  res.json({ ok: true, info: 'Express basic handler works' });
+});
+
 export default function handler(req, res) {
-  res.json({ express: typeof express });
+  app(req, res);
 }
