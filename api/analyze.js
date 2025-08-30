@@ -1,6 +1,6 @@
 import express from 'express';
-import upload from '../server/middlewares/uploadMiddleware.js';
-import { analyzeDocument, getAllDocuments, getAnalysisResults } from '../server/controllers/analysisController.js';
+//import upload from '../server/middlewares/uploadMiddleware.js';
+//import { analyzeDocument, getAllDocuments, getAnalysisResults } from '../server/controllers/analysisController.js';
 
 const app = express();
 
