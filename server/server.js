@@ -50,13 +50,21 @@ app.use((req, res, next) => {
 // Rutas de la API
 app.use('/api/analyze', analysisRoutes);
 
-// Servir archivos estáticos (si es necesario para producción)
-app.use(express.static(path.join(__dirname, 'client', 'dist')));
+// // Servir archivos estáticos (si es necesario para producción)
+// app.use(express.static(path.join(__dirname, 'client', 'dist')));
 
-// Ruta de fallback para SPA (debe ir después de las rutas de API)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
-});
+// // Ruta de fallback para SPA (debe ir después de las rutas de API)
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+// });
+
+// Solo servir el frontend desde el backend en desarrollo/local
+if (process.env.NODE_ENV !== 'production') {
+  app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'));
+  });
+}
 
 // Middleware global de errores
 app.use((err, req, res, next) => {
