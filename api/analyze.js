@@ -10,6 +10,12 @@ export const config = {
 };
 
 export default async function handler(req, res) {
+
+  // LOG de depuración de variables de entorno
+  console.log('PG_HOST:', process.env.PG_HOST, 'PG_USER:', process.env.PG_USER);
+  console.log('PG_PASS:', process.env.PG_PASS, 'PG_DB:', process.env.PG_DB);
+  console.log('PG_PORT:', process.env.PG_PORT);
+  
   if (req.method === 'POST') {
     const contentType = req.headers['content-type'] || '';
     if (!contentType.startsWith('multipart/form-data')) {
