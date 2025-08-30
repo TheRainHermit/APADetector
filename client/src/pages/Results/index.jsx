@@ -113,7 +113,7 @@ export default function Results() {
   const handleExportExcel = () => {
     const ws = XLSX.utils.json_to_sheet(results);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, t('results'));
+    XLSX.utils.book_append_sheet(wb, ws, String(t('results') || 'Resultados'));
     XLSX.writeFile(wb, `apa-results-${new Date().toISOString().split('T')[0]}.xlsx`);
   };
 
