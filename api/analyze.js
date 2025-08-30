@@ -1,7 +1,12 @@
 import { writeFile } from 'fs/promises';
 import path from 'path';
-import pool from '../server/models/db_pg.js'; // Usa el nuevo pool de PostgreSQL
+import { createClient } from '@supabase/supabase-js';
 import { analyzeFile } from '../server/services/apaService.js';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
 export const config = {
   api: {
@@ -12,9 +17,7 @@ export const config = {
 export default async function handler(req, res) {
 
   // LOG de depuración de variables de entorno
-  console.log('PG_HOST:', process.env.PG_HOST, 'PG_USER:', process.env.PG_USER);
-  console.log('PG_PASS:', process.env.PG_PASS, 'PG_DB:', process.env.PG_DB);
-  console.log('PG_PORT:', process.env.PG_PORT);
+  console.log('SUPABASE_URL:', process.env.SUPABASE_URL, 'SUPABASE_SERVICE_ROLE_KEY:', process.env.SUPABASE_SERVICE_ROLE_KEY);
   
   if (req.method === 'POST') {
     const contentType = req.headers['content-type'] || '';
@@ -58,14 +61,21 @@ export default async function handler(req, res) {
       await writeFile(tempPath, fileBuffer);
 
       try {
-        // 1. Guardar documento en la base de datos
-        const docResult = await pool.query(
-          `INSERT INTO documents (filename, originalname, mimetype, size)
-           VALUES ($1, $2, $3, $4)
-           RETURNING id`,
-          [fileName, fileName, mimeType, fileBuffer.length]
-        );
-        const documentId = docResult.rows[0].id;
+        // 1. Guardar documento en Supabase
+        const { data: docData, error: docError } = await supabase
+          .from('documents')
+          .insert([
+            {
+              filename: fileName,
+              originalname: fileName,
+              mimetype: mimeType,
+              size: fileBuffer.length
+            }
+          ])
+          .select('id')
+          .single();
+        if (docError) throw docError;
+        const documentId = docData.id;
 
         // 2. Analizar el archivo
         const analysis = await analyzeFile(tempPath, mimeType, 'es');
@@ -73,30 +83,26 @@ export default async function handler(req, res) {
           return res.status(500).json({ error: 'Análisis inválido' });
         }
 
-        // 3. Guardar resultados en la base de datos
-        const insertPromises = analysis.results.map(result =>
-          pool.query(
-            `INSERT INTO analysis_results
-              (document_id, type, title, message, suggestion, section, count, titleKey, messageKey, suggestionKey, sectionKey, messageParams)
-             VALUES
-              ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
-            [
-              documentId,
-              result.type,
-              result.title,
-              typeof result.message === 'object' ? JSON.stringify(result.message) : result.message,
-              result.suggestion,
-              result.section,
-              result.count || null,
-              result.titleKey || null,
-              result.messageKey || null,
-              result.suggestionKey || null,
-              result.sectionKey || null,
-              result.messageParams ? JSON.stringify(result.messageParams) : null,
-            ]
-          )
-        );
-        await Promise.all(insertPromises);
+        // 3. Guardar resultados en Supabase
+        const resultsToInsert = analysis.results.map(result => ({
+          document_id: documentId,
+          type: result.type,
+          title: result.title,
+          message: typeof result.message === 'object' ? JSON.stringify(result.message) : result.message,
+          suggestion: result.suggestion,
+          section: result.section,
+          count: result.count || null,
+          titleKey: result.titleKey || null,
+          messageKey: result.messageKey || null,
+          suggestionKey: result.suggestionKey || null,
+          sectionKey: result.sectionKey || null,
+          messageParams: result.messageParams ? JSON.stringify(result.messageParams) : null,
+        }));
+
+        const { error: resultsError } = await supabase
+          .from('analysis_results')
+          .insert(resultsToInsert);
+        if (resultsError) throw resultsError;
 
         // 4. Responder con el ID y el análisis
         return res.status(200).json({ ok: true, id: documentId, resultado: analysis });
