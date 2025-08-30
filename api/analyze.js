@@ -74,12 +74,16 @@ export default async function handler(req, res) {
           ])
           .select('id')
           .single();
-        if (docError) throw docError;
+        if (docError) {
+          console.error('Supabase documents insert error:', docError);
+          return res.status(500).json({ ok: false, error: docError.message || docError });
+        }
         const documentId = docData.id;
 
         // 2. Analizar el archivo
         const analysis = await analyzeFile(tempPath, mimeType, 'es');
         if (!analysis || !Array.isArray(analysis.results)) {
+          console.error('Análisis inválido:', analysis);
           return res.status(500).json({ error: 'Análisis inválido' });
         }
 
@@ -99,14 +103,19 @@ export default async function handler(req, res) {
           messageparams: result.messageParams ? JSON.stringify(result.messageParams) : null,
         }));
 
+        console.log('resultsToInsert:', resultsToInsert);
         const { error: resultsError } = await supabase
           .from('analysis_results')
           .insert(resultsToInsert);
-        if (resultsError) throw resultsError;
+        if (resultsError) {
+          console.error('Supabase analysis_results insert error:', resultsError);
+          return res.status(500).json({ ok: false, error: resultsError.message || resultsError });
+        }
 
         // 4. Responder con el ID y el análisis
         return res.status(200).json({ ok: true, id: documentId, resultado: analysis });
       } catch (error) {
+        console.error('Unexpected error in analyze handler:', error);
         return res.status(500).json({ ok: false, error: error.message });
       }
     });
