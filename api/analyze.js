@@ -88,9 +88,15 @@ export default async function handler(req, res) {
         }
 
         // 3. Guardar resultados en Supabase
+        const mapType = (type) => {
+          if (type === 'info') return 'success'; 
+          if (['success', 'error', 'warning', 'suggestion'].includes(type)) return type;
+          return 'warning'; 
+        };
+
         const resultsToInsert = analysis.results.map(result => ({
           document_id: documentId,
-          type: result.type,
+          type: mapType(result.type),
           title: result.title,
           message: result.message === undefined ? null : (typeof result.message === 'object' ? JSON.stringify(result.message) : result.message),
           suggestion: result.suggestion === undefined ? null : result.suggestion,
