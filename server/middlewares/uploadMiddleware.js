@@ -18,10 +18,12 @@ class MulterCustomError extends Error {
 }
 
 // Carpeta temporal para archivos subidos
-const uploadDir = join(__dirname, '../../uploads');
-if (!existsSync(uploadDir)) {
-  mkdirSync(uploadDir);
-}
+// const uploadDir = join(__dirname, '../../uploads');
+// if (!existsSync(uploadDir)) {
+//   mkdirSync(uploadDir);
+// }
+
+const uploadDir = '/tmp';
 
 const ALLOWED_TYPES = [
   'application/pdf',
