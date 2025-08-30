@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:4000/api/analyze';
+//const API_URL = 'http://localhost:4000/api/analyze';
+const API_URL = '/api/analyze';
 
 export async function uploadAndAnalyze(file, lang = 'es') {
   try{
