@@ -1,6 +1,6 @@
 import { writeFile } from 'fs/promises';
 import path from 'path';
-import pool from '../server/models/db.js';
+import pool from '../server/models/db_pg.js'; // Usa el nuevo pool de PostgreSQL
 import { analyzeFile } from '../server/services/apaService.js';
 
 export const config = {
@@ -53,12 +53,13 @@ export default async function handler(req, res) {
 
       try {
         // 1. Guardar documento en la base de datos
-        const [docResult] = await pool.query(
+        const docResult = await pool.query(
           `INSERT INTO documents (filename, originalname, mimetype, size)
-           VALUES (?, ?, ?, ?)`,
+           VALUES ($1, $2, $3, $4)
+           RETURNING id`,
           [fileName, fileName, mimeType, fileBuffer.length]
         );
-        const documentId = docResult.insertId;
+        const documentId = docResult.rows[0].id;
 
         // 2. Analizar el archivo
         const analysis = await analyzeFile(tempPath, mimeType, 'es');
@@ -67,37 +68,25 @@ export default async function handler(req, res) {
         }
 
         // 3. Guardar resultados en la base de datos
-        const safeResults = analysis.results.map(result => ({
-          type: result.type,
-          title: result.title,
-          message: typeof result.message === 'object' ? JSON.stringify(result.message) : result.message,
-          suggestion: result.suggestion,
-          section: result.section,
-          count: result.count || null,
-          titleKey: result.titleKey || null,
-          messageKey: result.messageKey || null,
-          suggestionKey: result.suggestionKey || null,
-          sectionKey: result.sectionKey || null,
-          messageParams: result.messageParams ? JSON.stringify(result.messageParams) : null,
-        }));
-
-        const insertPromises = safeResults.map(result =>
+        const insertPromises = analysis.results.map(result =>
           pool.query(
-            `INSERT INTO analysis_results (document_id, type, title, message, suggestion, section, count, titleKey, messageKey, suggestionKey, sectionKey, messageParams)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO analysis_results
+              (document_id, type, title, message, suggestion, section, count, titleKey, messageKey, suggestionKey, sectionKey, messageParams)
+             VALUES
+              ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
             [
               documentId,
               result.type,
               result.title,
-              result.message,
+              typeof result.message === 'object' ? JSON.stringify(result.message) : result.message,
               result.suggestion,
               result.section,
-              result.count,
-              result.titleKey,
-              result.messageKey,
-              result.suggestionKey,
-              result.sectionKey,
-              result.messageParams,
+              result.count || null,
+              result.titleKey || null,
+              result.messageKey || null,
+              result.suggestionKey || null,
+              result.sectionKey || null,
+              result.messageParams ? JSON.stringify(result.messageParams) : null,
             ]
           )
         );
