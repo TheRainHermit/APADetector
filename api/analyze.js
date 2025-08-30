@@ -92,11 +92,11 @@ export default async function handler(req, res) {
           suggestion: result.suggestion,
           section: result.section,
           count: result.count || null,
-          titleKey: result.titleKey || null,
-          messageKey: result.messageKey || null,
-          suggestionKey: result.suggestionKey || null,
-          sectionKey: result.sectionKey || null,
-          messageParams: result.messageParams ? JSON.stringify(result.messageParams) : null,
+          titlekey: result.titleKey || null,
+          messagekey: result.messageKey || null,
+          suggestionkey: result.suggestionKey || null,
+          sectionkey: result.sectionKey || null,
+          messageparams: result.messageParams ? JSON.stringify(result.messageParams) : null,
         }));
 
         const { error: resultsError } = await supabase
