@@ -59,7 +59,7 @@ export async function fetchAllDocuments({
 
 export async function fetchAnalysisResults(documentId, lang = 'es') {
   try {
-    const response = await axios.get(`${API_URL}/results/${documentId}?lang=${lang}`);
+    const response = await axios.get(`/api/results/${documentId}?lang=${lang}`);
     return response.data;
   } catch (err) {
     // Si la respuesta es estructurada, lánzala tal cual
